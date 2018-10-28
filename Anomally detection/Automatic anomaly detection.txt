@@ -1,0 +1,277 @@
+#---------------------input parameters-------------#
+setwd("C:\\Shiva\\Projects\\GS\\GS_fault")
+rm(list = ls())
+filename = "C:\\Shiva\\Projects\\GS\\GS_fault\\Anomaly_train.csv"
+idcolumn = "FAULT_ID"
+dependent = "CLEAR_CODE_OBJECT"
+
+## Anomaly detection##
+Train <- function(filename,idcolumn,dependent)
+  
+{
+  
+library(dplyr)
+library(ggplot2)
+library(cluster)
+library(rpart)
+library(fpc)
+library(factoextra)
+library(clues)
+library(rpart)
+library(grid)
+library(partykit)
+library(class)
+library(clv)
+library(lattice)
+library(modeltools)
+library(stats4)
+library(flexclust)
+
+
+##Importing data set##
+
+data <- read.csv(filename, stringsAsFactors = T, na.strings = c(""," ","NULL","?","NA"))
+
+dim(data)      
+
+str(data)
+
+head(data)
+
+summary(data)
+
+data <- na.omit(data)
+
+
+data1 <- data
+#--------------------FILTER CATEGORICAL DATA--------------------------------#
+char_cols <- which(sapply(data1, is.factor))  #categorical columns
+char_data <- data1[,char_cols]
+
+
+#---------------DEPENDENT VARIABLE SELECTION--------------------------------#
+dv <- data1[,dependent]
+dv <- as.factor(dv)
+#--------------INDEPENDENT VARIABLE SELECTION-------------------------------#
+c1 <- which(names(data1)==dependent)
+c2 <- which(names(data1)==idcolumn)
+iv <- data1[,-c(c1,c2)]    #Independent variable list
+
+
+#---------------------CLUSTERING-STAGE1-------------------------------------#
+#---------------------FILTER MEASURE DATA-----------------------------------#
+num_cols <- which(sapply(iv,is.numeric))   #numeric columns
+clust <- iv[,num_cols]    
+#clust <- clust[,-c2]    #Removing ID column from the dataset
+
+
+#---------------DETERMINE k-------------------------------------------------#
+library(permute)
+library(lattice)
+library(vegan)
+set.seed(123)
+fit <- cascadeKM(scale(clust, center = TRUE,  scale = TRUE), 1, 10, iter = 1000)
+plot(fit, sortg = TRUE, grpmts.plot = TRUE)
+k1 <- as.numeric(which.max(fit$results[2,]))
+
+
+
+'#--------------------------------METHOD 2-------------------------------------#
+install.packages("NbClust")
+library(NbClust)
+set.seed(1234)
+noofk <- NbClust(clust,distance="euclidean",min.nc=2,max.nc=10,method="complete",index="ch")
+k1 <- noofk$Best.nc[1]
+
+'#--------------------CLUSTER ALGORITHM---------------------------------------#
+
+clust <- scale(as.matrix(clust)) # Standardising data set
+
+set.seed(1)
+fit.km = flexclust::kcca(clust, k1, kccaFamily("kmeans"))
+pred_train <- predict(fit.km)
+
+# Centroid Plot against 1st 2 discriminant functions
+#plotcluster(clust, fit.km$cluster)
+image(fit.km)
+points(clust, col=pred_train, pch=19, cex=0.3)
+
+#------ADD CLUSTER MEMBERSHIP TO ORIGINAL DATA
+clust_mem <- data.frame(iv, pred_train)
+
+#-------ADD DEPENDENT COLUMN TO ORIGINAL DATA
+clust_mem <- cbind(clust_mem,dv)
+
+
+ds <- split.data.frame(clust_mem,clust_mem$pred_train)
+
+# compute intercluster distances and intracluster diameters
+interclust <- cls.scatt.data(clust, pred_train, dist="euclidean")
+average_interclass <- interclust$intracls.average
+
+center <- as.data.frame(interclust$cluster.center)
+
+#Need to put it in loop
+center1 <- t(center)[,1]
+center2 <- t(center)[,2]
+center3 <- t(center)[,3]
+
+
+
+#-----------------CLASSIFICATION-D TREES-----------------------------------------#
+
+
+for(i in 1:k1)  { 
+  
+  # grow tree 
+  fit.dimer <- rpart(dv~CUST_ACCEPTED_CLOSURE_TIME+FAULT_CLEAR_TARGET_TIME+RESTORE_AMOUNT+TOTAL_OUTAGE_TIME__SECS_
+                     +RESTORE_UNITS+PORT_COUNT+UNLOCK_COUNT+CHILD_COUNT,
+                     method="class",data=ds[[i]]) 
+  
+  control<-rpart.control(xval=10, cp=0.01, minsplit=5, minbucket=5) #control the size of the initial tree 
+  tree.fit <- rpart(dv~CUST_ACCEPTED_CLOSURE_TIME+FAULT_CLEAR_TARGET_TIME+RESTORE_AMOUNT+TOTAL_OUTAGE_TIME__SECS_
+                    +RESTORE_UNITS+PORT_COUNT+UNLOCK_COUNT+CHILD_COUNT,
+                    method="class", data=ds[[i]], 
+                    control=control) # model fitting 
+  p.tree<- prune(tree.fit, 
+                 cp=tree.fit$cptable[which.min(tree.fit$cptable[,"xerror"]),"CP"]) # prune the tree 
+  
+  # PLOT TREE
+  #plot(p.tree)
+  #text(p.tree, use.n=TRUE, all=TRUE, cex=.8)
+  #printcp(p.tree)
+  #plotcp(p.tree)
+  
+  save(p.tree,file=paste("p.tree_",i,".RData",sep = ""))
+  
+} 
+
+
+# save rules
+pathpred <- function(object, ...)
+{
+  ## coerce to "party" object if necessary
+  if(!inherits(object, "party")) object <- as.party(object)
+  
+  ## get standard predictions (response/prob) and collect in data frame
+  rval <- data.frame(response = predict(object, type = "response", ...))
+  rval$prob <- predict(object, type = "prob", ...)
+  
+  ## get rules for each node
+  rls <- partykit:::.list.rules.party(object)
+  
+  ## get predicted node and select corresponding rule
+  rval$rule <- rls[as.character(predict(object, type = "node", ...))]
+  
+  return(rval)
+}
+
+
+
+for(i in 1:k1)
+{
+  load(paste("p.tree_",i,".RData",sep=""))
+  rules_pred <- pathpred(p.tree)
+  print(rules_pred)
+  #file <- "C:\\Shiva\\Projects\\GS\\GS_fault"
+  write.csv(rules_pred,paste("C:\\Shiva\\Projects\\GS\\GS_fault\\rules_pred_",i,".csv",sep=""),row.names=FALSE)
+}
+
+
+
+list_out=list(k1,center1,center2,center3,rules_pred,average_interclass)
+return(list_out)
+#return(center1)
+#return(center2)
+#return(center3)
+#return(rules_pred)
+#return(average_interclass)
+
+}
+
+
+list_out=Train("C:\\Shiva\\Projects\\GS\\GS_fault\\Anomaly_train.csv","FAULT_ID","CLEAR_CODE_OBJECT")
+
+
+
+## -------------------------------New transaction----------------------------------------------------------------------------------------------------------------##
+filename1 = "C:\\Shiva\\Projects\\GS\\GS_fault\\Anomaly_test_.csv"
+idcolumn = "FAULT_ID"
+#dependent = "CLEAR_CODE_OBJECT"
+
+Test <- function(filename1,idcolumn,dependent)
+  
+{
+
+newtrans <-read.csv(filename1, stringsAsFactors = T, na.strings = c(""," ","NULL","?","NA"))
+
+data <- na.omit(newtrans)
+
+#--------------------FILTER CATEGORICAL DATA--------------------------------#
+char_cols1 <- which(sapply(newtrans, is.factor))  #categorical columns
+char_data1 <- newtrans[,char_cols1]
+#---------------------------------------------------------------------------#
+
+#---------------DEPENDENT VARIABLE SELECTION--------------------------------#
+#dv1 <- newtrans[,dependent]
+
+#--------------INDEPENDENT VARIABLE SELECTION-------------------------------#
+#c11 <- which(names(newtrans)==dependent)
+c21 <- which(names(newtrans)==idcolumn)
+iv1 <- newtrans[,-c21]    #Independent variable list
+
+
+
+
+#---------------------FILTER MEASURE DATA-----------------------------------#
+num_cols1 <- which(sapply(iv1,is.numeric))   #numeric columns
+clust1 <- iv1[,num_cols1]    
+#clust1<- clust1[,-c21]    #Removing ID column from the dataset
+
+##------------------------------------Assigning new transaction to cluster--------------------------------------------------------##
+clust1 <- scale(as.matrix(clust1))
+pred_test <- predict(fit.km, newdata=clust1) # assigning new transaction to clusters(rename)
+
+#image(fit.km)
+#points(newtrans, col=pred_test, pch=22, bg="orange")
+
+clust1 <- data.frame(clust1,pred_test)
+clust1 <- split.data.frame(clust1,clust1$pred_test)
+clust1$`1`$pred_test <- NULL
+clust1$`2`$pred_test <- NULL
+clust1$`3`$pred_test <- NULL
+
+clustdata_test <- data.frame(iv1,pred_test) #clusters
+
+ds_new <- split.data.frame(clustdata_test,clustdata_test$pred_test) #splitting data according to clusters
+clustdata_test$pred_test <- NULL
+
+# distance between new transaction to centroid
+newtrans_dist_1=flexclust:::dist2(clust1$`1`,center1,method = "euclidean")
+newtrans_dist_2=flexclust:::dist2(clust1$`2`,center2,method = "euclidean")
+newtrans_dist_3=flexclust:::dist2(clust1$`3`,center3,method = "euclidean")
+
+
+
+for(i in 1:k1)
+{
+load(paste("p.tree_",i,".RData",sep=""))                      
+ds_new[[i]]$pred_class <- predict(p.tree,newdata=ds_new[[i]],type="class")
+
+ds_new[[i]]$Prob <- predict(p.tree, newdata = ds_new[[i]], type="prob") #Returns a matrix of predicted probabilities
+}
+
+list_out1=list(clustdata_test,newtrans_dist,newtrans_dist_1,newtrans_dist_2,newtrans_dist_3,ds_new)
+return(list_out1)
+
+#return(clustdata_test)
+#return(newtrans_dist)
+#return(newtrans_dist_1)
+#return(newtrans_dist_2)
+#return(newtrans_dist_2)
+#return(ds_new)
+
+}
+
+list_out1 <- Test(filename1,idcolumn)
+
