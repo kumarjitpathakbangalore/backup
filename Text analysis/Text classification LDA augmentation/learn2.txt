@@ -1,0 +1,95 @@
+Customer Verbatim analysis – message from a customer, either from an nps survey or after speaking to an advisor. 
+Classified into topics such as broadband issues, value for money and comments about staff. 
+This was done using an RNN. We then used a seq2seq autoencoder to embed the comments in vectors 
+and can do similarity searches and clustering to find similar comments. 
+
+
+Make segment on top of it to predict to make aggregation. 
+
+
+
+aapka wala code shayad lage... :\
+
+I/P - 
+a a p k a  w a l a  c o d e  s h a y a d  l a g e . . .  : \
+
+
+ |
+ 
+RNN - Layer 1
+RNN - Hidden 1
+RNN - Layer 1
+ 
+ |
+
+
+O/P  - a p k a  w a l a  c o d e  s h a y a d  l a g e . . .  : \
+
+
+
+
+
+a b c d e f g h i j  k  l
+1 2 3 4 5 6 7 8 9 10 11 12
+
+
+h d a k 
+
+0 0 0 0 0 0 0 0 0
+1)
+h (8 0 0 0 0 0 0 0 0)  
+
+ |
+ 
+RNN - Layer 1
+RNN - Hidden 1
+RNN - Layer 1
+ 
+ |
+
+d( 0 4 0 0 0 0 0 0 0 ) - Grad : 4-8 = -4
+
+2)
+
+hd (8 4 0 0 0 0 0 0 0) 
+
+ |
+ 
+RNN - Layer 1
+RNN - Hidden 1
+RNN - Layer 1
+ 
+ |
+
+a(0 0 1 0 0 0 0 0) - Grad : 1-4 = -3
+
+3) 
+
+hda(841)
+
+ |
+ 
+RNN - Layer 1
+RNN - Hidden 1
+RNN - Layer 1
+ 
+ |
+
+k(11) - Grad : 11-1 = 10
+
+
+4)
+
+hdak(84111)
+
+ |
+ 
+RNN - Layer 1
+RNN - Hidden 1
+RNN - Layer 1
+ 
+ |
+
+ - Grad : 0-11 = -11
+
+

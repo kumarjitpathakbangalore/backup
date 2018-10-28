@@ -1,0 +1,118 @@
+---
+title: "BT- Text to Speech Full run."
+output: html_document
+---
+
+
+```{python}
+# TRANSLATE TO TEXT
+
+import speech_recognition as sr
+r = sr.Recognizer()
+
+   
+import os
+
+os.chdir('E:/puneeth/Full Run')
+dir ='E:/puneeth/Full Run/Audio Source/'
+list = os.listdir(dir) # dir is your directory path
+number_files = len(list)
+
+
+for name in list:
+    au = 'E:/puneeth/Full Run/Audio Source/' + name
+    
+    #translate
+    with sr.AudioFile(au) as source:
+        audio = r.record(source)  
+        text=r.recognize_ibm(audio,"2cbe1b41-67b6-49ca-b3ac-4195e9bf0972","UX8URu7Utnuz",language="en-GB")
+    
+    #write file
+    f = open('E:/puneeth/Full Run/translated Files/' + name.split(".")[0] + '.txt','w')
+    f.write(str(text))
+    f.close()
+    
+
+
+```
+
+```{r}
+
+# LDA model on the text Data.
+setwd('E:/puneeth/Full Run/')
+# install.packages("textmineR")
+library("textmineR")
+# install.packages("wordcloud") # word-cloud generator 
+# install.packages("RColorBrewer") # color palettes
+library("wordcloud")
+library("RColorBrewer")
+
+# Read the translated File
+# text_raw1= read.csv('Translated File.csv',header=TRUE)
+lines1 <- readLines('E:/puneeth/Full Run/translated Files/Bill issue.txt')
+lines2 <- readLines('E:/puneeth/Full Run/translated Files/Bill issue_2.txt')
+lines3 <- readLines('E:/puneeth/Full Run/translated Files/Speed Issue.txt')
+
+text_raw1 <- data.frame(col=c('doc1','doc2','doc3'),data=c(lines1,lines2,lines3))
+
+# create doc term matrix
+cosmos_dtm <- CreateDtm(text_raw1$data, 
+                        ngram_window = c(1, 2))
+
+# cosmos_df <- as.data.frame(as.matrix(cosmos_dtm))
+#Run lda model
+lda_model <- FitLdaModel(dtm = cosmos_dtm, k = 2, iterations = 1000)
+
+lda_model$theta
+
+PHI <- as.data.frame(lda_model$phi)
+
+# Document topic mapping.
+
+# get the top key words for each topic
+# function will returnt the top terms of the topics
+GetTopicTerms <- function(phi, req_topic_top_Terms){
+  
+  result_topterms <- apply(phi, 1, function(x){
+    names(x)[ order(x, decreasing=TRUE) ][ 1:req_topic_top_Terms]
+  })
+  
+  return(result_topterms)
+}
+
+# The selected model's all words pairs are passed to function, to get top #N words in each topic
+lda_model$topic_terms <- GetTopicTerms(phi = lda_model$phi, req_topic_top_Terms = 20)
+
+#Document Topic Mapping
+lda_model$class <- colnames(lda_model$theta)[max.col(lda_model$theta,ties.method="first")]
+
+text_raw1$topics <- lda_model$class
+
+write.csv(text_raw1,'text_raw1.csv')
+
+#Build topic Word Cloud.
+
+
+
+jpeg(file = 'word_clouds/word_cloud1.jpeg')
+set.seed(1234)
+wordcloud(words = lda_model$topic_terms[,1], freq =c(rep(1,length(lda_model$topic_terms[,1]))), min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+dev.off()
+
+jpeg(file = 'word_clouds/word_cloud2.jpeg')
+set.seed(1234)
+wordcloud(words = lda_model$topic_terms[,2], freq =c(rep(1,length(lda_model$topic_terms[,1]))), min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+dev.off()
+
+
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

@@ -1,0 +1,83 @@
+import os
+import cPickle
+import numpy as np 
+import scipy as sp 
+import matplotlib as mpl 
+import matplotlib.cm as cm 
+import matplotlib.pyplot as plt 
+import pandas as pd 
+import nltk
+import re
+import csv
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+from sklearn.cross_validation import train_test_split
+from sklearn.linear_model import SGDClassifier
+from scipy.sparse import hstack
+from sklearn.metrics import confusion_matrix
+from time import time
+
+pd.set_option('display.width', 500)
+pd.set_option('display.max_columns', 100)
+pd.set_option('display.notebook_repr_html', True)
+
+%matplotlib inline
+
+stop = set(stopwords.words('english'))
+def clean(doc):
+    doc = " ".join([i.replace('*', '') for i in doc.lower().split()])
+    doc = " ".join([i.replace(':', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('.', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('=', '') for i in doc.split()])
+    doc = " ".join([i.replace('/', ' ') for i in doc.split()])
+    doc = " ".join([i.replace(')', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('(', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('"', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('-', ' ') for i in doc.split()])
+    doc = " ".join([i.replace('_', ' ') for i in doc.split()])
+    doc = " ".join([i for i in doc.split() if not i.isdigit()])
+    doc = " ".join([i for i in doc.split() if i.isalpha()])
+    doc = " ".join([i for i in doc.split() if i not in stop])
+    return doc
+
+def vectorize_data(clean_title, vectorizer, vectorize = False, table = None):
+    time_0 = time()
+    print "Vectorizing cleaned data...\n"
+    if (vectorize == True):
+        X_features = vectorizer.fit_transform(clean_title)
+        X_features = X_features.toarray()
+    else:
+        X_features = vectorizer.transform(clean_title)
+        X_features = X_features.toarray()        
+    if (table is not None and 'Topic' in table.columns):
+        y_variable = np.asarray(table['Topic'])
+        print "Returned X and y"
+        time_taken = time() - time_0
+        print "Time taken: %f sec" % (time_taken)
+        return (X_features, y_variable, vectorizer)
+    else:
+        time_taken = time() - time_0
+        print "Returned X"
+        print "Time taken: %f sec" % (time_taken)
+        return(X_features, vectorizer)
+
+vectorizer = CountVectorizer(analyzer = "word", max_features = 2000)
+
+with open('storage.bin', 'rb') as f:
+    data_struct = cPickle.load(f)
+    vectorizer, model = data_struct['vectorizer'], data_struct['model']
+
+data = pd.read_csv('newlog_for_node5_modifed_26_10_2017.csv', header = None)
+data.columns = ('Date', 'Notes')
+doc_complete = data['Notes'].tolist()
+doc_clean = [clean(doc).split() for doc in doc_complete]
+doc_clean1 = [' '.join(i) for i in doc_clean]
+data['Notes_clean'] = doc_clean1
+clean_test = data['Notes_clean'].tolist()
+X_test, vectorizer = vectorize_data(clean_title = clean_test, vectorizer = vectorizer)
+y_test = model.predict(X_test)
+data['Prediction'] = y_test
+data.to_csv('predicted_1026_node5.csv', index = False)

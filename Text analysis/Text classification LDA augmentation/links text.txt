@@ -1,0 +1,15 @@
+Text summarization :
+
+https://www.youtube.com/watch?v=ogrJaOIuBx4
+
+https://github.com/llSourcell/How_to_make_a_text_summarizer
+
+https://github.com/icoxfog417/awesome-text-summarization
+
+https://github.com/mathsyouth/awesome-text-summarization
+
+https://arxiv.org/pdf/1602.06023.pdf
+
+https://machinelearningmastery.com/encoder-decoder-deep-learning-models-text-summarization/
+
+https://www.ibm.com/support/knowledgecenter/en/SS8NLW_12.0.0/com.ibm.swg.im.infosphere.dataexpl.engine.doc/t_options-summarization-overview.html
