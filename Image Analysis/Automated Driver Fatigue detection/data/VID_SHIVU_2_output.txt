@@ -1,0 +1,1058 @@
+C:\Users\injkapila\AppData\Local\Continuum\Anaconda3\envs\innovate\python.exe D:/innovation/innovate/Extraction.py
+Using TensorFlow backend.
+Training set (3876, 24, 24, 1) (3876, 1)
+Test set (970, 24, 24, 1) (970, 1)
+The original shape of input is : (3876, 24, 24, 1)
+3876 train samples, 1 channels, 24x24
+970  test samples, 1 channels, 24x24
+Optimiser Used is SGD!
+Train on 3876 samples, validate on 970 samples
+Epoch 1/12
+2017-06-08 18:40:20.244131: W c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core\platform\cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-08 18:40:20.244131: W c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core\platform\cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-08 18:40:20.244131: W c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core\platform\cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE3 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-08 18:40:20.245131: W c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core\platform\cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2017-06-08 18:40:20.245131: W c:\tf_jenkins\home\workspace\release-win\device\cpu\os\windows\tensorflow\core\platform\cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+16s - loss: 0.6524 - acc: 0.6161 - val_loss: 0.5941 - val_acc: 0.6784
+Epoch 2/12
+14s - loss: 0.6003 - acc: 0.6883 - val_loss: 0.5527 - val_acc: 0.7268
+Epoch 3/12
+14s - loss: 0.5448 - acc: 0.7288 - val_loss: 0.5231 - val_acc: 0.7299
+Epoch 4/12
+14s - loss: 0.4344 - acc: 0.8021 - val_loss: 0.4204 - val_acc: 0.8041
+Epoch 5/12
+14s - loss: 0.3235 - acc: 0.8617 - val_loss: 0.2631 - val_acc: 0.8969
+Epoch 6/12
+14s - loss: 0.2527 - acc: 0.9009 - val_loss: 0.2512 - val_acc: 0.9021
+Epoch 7/12
+14s - loss: 0.1992 - acc: 0.9236 - val_loss: 0.2003 - val_acc: 0.9330
+Epoch 8/12
+14s - loss: 0.1687 - acc: 0.9345 - val_loss: 0.1593 - val_acc: 0.9485
+Epoch 9/12
+14s - loss: 0.1561 - acc: 0.9389 - val_loss: 0.1798 - val_acc: 0.9392
+Epoch 10/12
+14s - loss: 0.1539 - acc: 0.9409 - val_loss: 0.1316 - val_acc: 0.9536
+Epoch 11/12
+14s - loss: 0.1471 - acc: 0.9435 - val_loss: 0.1574 - val_acc: 0.9392
+Epoch 12/12
+14s - loss: 0.1370 - acc: 0.9471 - val_loss: 0.1404 - val_acc: 0.9464
+ 32/970 [..............................] - ETA: 0s
+ 96/970 [=>............................] - ETA: 0s
+160/970 [===>..........................] - ETA: 0s
+224/970 [=====>........................] - ETA: 0s
+288/970 [=======>......................] - ETA: 0s
+352/970 [=========>....................] - ETA: 0s
+416/970 [===========>..................] - ETA: 0s
+480/970 [=============>................] - ETA: 0s
+544/970 [===============>..............] - ETA: 0s
+608/970 [=================>............] - ETA: 0s
+672/970 [===================>..........] - ETA: 0s
+736/970 [=====================>........] - ETA: 0s
+800/970 [=======================>......] - ETA: 0s
+864/970 [=========================>....] - ETA: 0s
+928/970 [===========================>..] - ETA: 0sTest score: 0.140354430368
+Test accuracy: 0.946391752332
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_1 (Conv2D)            (None, 22, 22, 32)        320       
+_________________________________________________________________
+activation_1 (Activation)    (None, 22, 22, 32)        0         
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 20, 20, 24)        6936      
+_________________________________________________________________
+activation_2 (Activation)    (None, 20, 20, 24)        0         
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 10, 10, 24)        0         
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 10, 10, 24)        0         
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 10, 10, 64)        13888     
+_________________________________________________________________
+activation_3 (Activation)    (None, 10, 10, 64)        0         
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 8, 8, 64)          36928     
+_________________________________________________________________
+activation_4 (Activation)    (None, 8, 8, 64)          0         
+_________________________________________________________________
+max_pooling2d_2 (MaxPooling2 (None, 4, 4, 64)          0         
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 4, 4, 64)          0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 1024)              0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               524800    
+_________________________________________________________________
+activation_5 (Activation)    (None, 512)               0         
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 512)               0         
+_________________________________________________________________
+dense_2 (Dense)              (None, 1)                 513       
+_________________________________________________________________
+activation_6 (Activation)    (None, 1)                 0         
+=================================================================
+Total params: 583,385
+Trainable params: 583,385
+Non-trainable params: 0
+_________________________________________________________________
+Eye Model Loaded as None
+Training set (59, 60, 60, 1) (59, 1)
+Test set (15, 60, 60, 1) (15, 1)
+Optimiser Used is RMSprop!
+Train on 59 samples, validate on 15 samples
+Epoch 1/20
+9s - loss: 1.4809 - acc: 0.5593 - val_loss: 0.7034 - val_acc: 0.5333
+Epoch 2/20
+8s - loss: 0.7636 - acc: 0.5763 - val_loss: 0.6568 - val_acc: 0.8000
+Epoch 3/20
+8s - loss: 0.6197 - acc: 0.7627 - val_loss: 1.0042 - val_acc: 0.5333
+Epoch 4/20
+8s - loss: 0.4855 - acc: 0.8305 - val_loss: 0.2651 - val_acc: 0.8667
+Epoch 5/20
+8s - loss: 0.2593 - acc: 0.8983 - val_loss: 0.2415 - val_acc: 0.8667
+Epoch 6/20
+8s - loss: 0.2527 - acc: 0.9322 - val_loss: 0.2864 - val_acc: 0.8667
+Epoch 7/20
+8s - loss: 0.2235 - acc: 0.9831 - val_loss: 0.4926 - val_acc: 0.8667
+Epoch 8/20
+8s - loss: 0.1419 - acc: 0.9661 - val_loss: 0.0949 - val_acc: 0.9333
+Epoch 9/20
+8s - loss: 0.2603 - acc: 0.9661 - val_loss: 0.1473 - val_acc: 0.9333
+Epoch 10/20
+8s - loss: 0.0617 - acc: 0.9661 - val_loss: 1.0892 - val_acc: 0.7333
+Epoch 11/20
+8s - loss: 0.1065 - acc: 0.9831 - val_loss: 0.0755 - val_acc: 0.9333
+Epoch 12/20
+8s - loss: 0.0151 - acc: 0.9831 - val_loss: 0.3847 - val_acc: 0.8667
+Epoch 13/20
+8s - loss: 0.1782 - acc: 0.9831 - val_loss: 0.1911 - val_acc: 0.9333
+Epoch 14/20
+8s - loss: 0.3079 - acc: 0.9661 - val_loss: 0.7824 - val_acc: 0.8000
+Epoch 15/20
+8s - loss: 0.0840 - acc: 0.9831 - val_loss: 0.9685 - val_acc: 0.8000
+Epoch 16/20
+8s - loss: 0.7886 - acc: 0.9153 - val_loss: 0.1635 - val_acc: 0.9333
+Epoch 17/20
+8s - loss: 7.6705e-04 - acc: 1.0000 - val_loss: 0.1391 - val_acc: 0.9333
+Epoch 18/20
+8s - loss: 0.0021 - acc: 1.0000 - val_loss: 0.1828 - val_acc: 0.9333
+Epoch 19/20
+8s - loss: 0.2908 - acc: 0.9322 - val_loss: 1.1213 - val_acc: 0.8000
+Epoch 20/20
+8s - loss: 8.8855e-04 - acc: 1.0000 - val_loss: 0.5380 - val_acc: 0.9333
+ 8/15 [===============>..............] - ETA: 0sTest score: 0.537981786579
+Test accuracy: 0.933333333333
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_5 (Conv2D)            (None, 58, 58, 32)        320       
+_________________________________________________________________
+activation_7 (Activation)    (None, 58, 58, 32)        0         
+_________________________________________________________________
+conv2d_6 (Conv2D)            (None, 56, 56, 32)        9248      
+_________________________________________________________________
+activation_8 (Activation)    (None, 56, 56, 32)        0         
+_________________________________________________________________
+max_pooling2d_3 (MaxPooling2 (None, 28, 28, 32)        0         
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 28, 28, 32)        0         
+_________________________________________________________________
+conv2d_7 (Conv2D)            (None, 26, 26, 64)        18496     
+_________________________________________________________________
+activation_9 (Activation)    (None, 26, 26, 64)        0         
+_________________________________________________________________
+max_pooling2d_4 (MaxPooling2 (None, 13, 13, 64)        0         
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 13, 13, 64)        0         
+_________________________________________________________________
+flatten_2 (Flatten)          (None, 10816)             0         
+_________________________________________________________________
+dense_3 (Dense)              (None, 512)               5538304   
+_________________________________________________________________
+activation_10 (Activation)   (None, 512)               0         
+_________________________________________________________________
+dropout_6 (Dropout)          (None, 512)               0         
+_________________________________________________________________
+dense_4 (Dense)              (None, 1)                 513       
+_________________________________________________________________
+activation_11 (Activation)   (None, 1)                 0         
+=================================================================
+Total params: 5,566,881
+Trainable params: 5,566,881
+Non-trainable params: 0
+_________________________________________________________________
+Yawn Model Loaded as None
+Total Frames: 269.0  And FPS: 30.0
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: [[136 180 267 267]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.04426942]]
+Prediction for Yawn  [[ 0.00598638]]
+Face Array: [[129 176 274 274]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.04567803]]
+Prediction for Yawn  [[ 0.00742425]]
+Face Array: [[131 178 272 272]]
+Blink Counter:  2
+Eye Blinked!
+Prediction for eye:  [[ 0.04559593]]
+Prediction for Yawn  [[ 0.00665572]]
+Face Array: [[129 183 277 277]]
+Blink Counter:  3
+Eye Blinked!
+Prediction for eye:  [[ 0.10717882]]
+Prediction for Yawn  [[ 0.19041106]]
+Face Array: [[122 178 284 284]]
+Blink Counter:  4
+Eye Open!
+Prediction for eye:  [[ 0.03683398]]
+Prediction for Yawn  [[ 0.10930698]]
+Face Array: [[132 184 274 274]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.0585048]]
+Prediction for Yawn  [[ 0.04560089]]
+Face Array: [[134 180 280 280]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.05078832]]
+Prediction for Yawn  [[ 0.03961347]]
+Face Array: [[127 182 283 283]]
+Blink Counter:  2
+Eye Open!
+Prediction for eye:  [[ 0.04337083]]
+Prediction for Yawn  [[ 0.07662287]]
+Face Array: [[130 189 272 272]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.137225]]
+Prediction for Yawn  [[ 0.04266445]]
+Face Array: [[137 198 257 257]]
+Blink Counter:  1
+Eye Open!
+Prediction for eye:  [[ 0.04341958]]
+Prediction for Yawn  [[ 0.01568614]]
+Face Array: [[132 195 268 268]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.06537028]]
+Prediction for eye:  [[ 0.03562543]]
+Prediction for Yawn  [[ 0.04357407]]
+Face Array: [[134 194 268 268]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.10701659]]
+Prediction for Yawn  [[ 0.01353549]]
+Face Array: [[127 190 274 274]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08962016]]
+Prediction for eye:  [[ 0.21023269]]
+Prediction for Yawn  [[ 0.00731832]]
+Face Array: [[137 200 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12203416]]
+Prediction for eye:  [[ 0.19129568]]
+Prediction for Yawn  [[ 0.01084332]]
+Face Array: [[127 195 278 278]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11167522]]
+Prediction for eye:  [[ 0.19668648]]
+Prediction for Yawn  [[ 0.02549863]]
+Face Array: [[124 196 282 282]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.06358697]]
+Prediction for eye:  [[ 0.12616915]]
+Prediction for Yawn  [[ 0.04583319]]
+Face Array: [[123 194 284 284]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.05903979]]
+Prediction for eye:  [[ 0.11095238]]
+Prediction for Yawn  [[ 0.01971552]]
+Face Array: [[130 204 268 268]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.11309005]]
+Prediction for Yawn  [[ 0.01577737]]
+Face Array: [[132 205 269 269]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.05765526]]
+Prediction for Yawn  [[ 0.01043979]]
+Face Array: [[136 214 263 263]]
+Blink Counter:  2
+Eye Blinked!
+Prediction for eye:  [[ 0.06508396]]
+Prediction for Yawn  [[ 0.02126625]]
+Face Array: [[130 209 269 269]]
+Blink Counter:  3
+Eye Open!
+Prediction for eye:  [[ 0.0840839]]
+Prediction for eye:  [[ 0.18580712]]
+Prediction for Yawn  [[ 0.00525447]]
+Face Array: [[134 217 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.30322734]]
+Prediction for eye:  [[ 0.14585158]]
+Prediction for Yawn  [[ 0.01104352]]
+Face Array: [[122 202 289 289]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.07253041]]
+Prediction for eye:  [[ 0.16818845]]
+Prediction for Yawn  [[ 0.00648629]]
+Face Array: [[140 224 255 255]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.1036144]]
+Prediction for eye:  [[ 0.37869671]]
+Prediction for Yawn  [[ 0.00572104]]
+Face Array: [[137 219 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12242759]]
+Prediction for eye:  [[ 0.18397298]]
+Prediction for Yawn  [[ 0.00450305]]
+Face Array: [[133 220 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08128865]]
+Prediction for Yawn  [[ 0.0046689]]
+Face Array: [[129 218 272 272]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.14289156]]
+Prediction for eye:  [[ 0.26431081]]
+Prediction for Yawn  [[ 0.00709701]]
+Face Array: [[131 220 270 270]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.25024056]]
+Prediction for eye:  [[ 0.0945164]]
+Prediction for Yawn  [[ 0.00273437]]
+Face Array: [[130 216 280 280]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.09176817]]
+Prediction for eye:  [[ 0.34168187]]
+Prediction for Yawn  [[ 0.00224122]]
+Face Array: [[136 224 270 270]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11260834]]
+Prediction for eye:  [[ 0.19109032]]
+Prediction for Yawn  [[ 0.00444547]]
+Face Array: [[132 224 270 270]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.06626856]]
+Prediction for eye:  [[ 0.10625921]]
+Prediction for Yawn  [[ 0.00394261]]
+Face Array: [[132 216 282 282]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.09172001]]
+Prediction for eye:  [[ 0.17496039]]
+Prediction for Yawn  [[ 0.0019247]]
+Face Array: [[126 211 290 290]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.14070646]]
+Prediction for eye:  [[ 0.09263907]]
+Prediction for Yawn  [[ 0.00104186]]
+Face Array: [[134 220 275 275]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.10784615]]
+Prediction for eye:  [[ 0.19064339]]
+Prediction for Yawn  [[ 0.00202393]]
+Face Array: [[139 219 275 275]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08699241]]
+Prediction for eye:  [[ 0.19906388]]
+Prediction for Yawn  [[ 0.00140607]]
+Face Array: [[145 222 271 271]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.09181154]]
+Prediction for eye:  [[ 0.18654929]]
+Prediction for Yawn  [[ 0.00119822]]
+Face Array: [[146 218 273 273]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13444887]]
+Prediction for eye:  [[ 0.17226706]]
+Prediction for Yawn  [[ 0.000705]]
+Face Array: [[149 216 275 275]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13625747]]
+Prediction for eye:  [[ 0.15817648]]
+Prediction for Yawn  [[ 0.00041733]]
+Face Array: [[159 225 260 260]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.09700067]]
+Prediction for eye:  [[ 0.15536565]]
+Prediction for Yawn  [[ 0.001116]]
+Face Array: [[160 218 266 266]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18167377]]
+Prediction for eye:  [[ 0.08853143]]
+Prediction for Yawn  [[ 0.00061325]]
+Face Array: [[160 214 276 276]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.15229216]]
+Prediction for eye:  [[ 0.21554214]]
+Prediction for Yawn  [[ 0.0006794]]
+Face Array: [[157 209 277 277]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.15924653]]
+Prediction for eye:  [[ 0.1477942]]
+Prediction for Yawn  [[ 0.00058501]]
+Face Array: [[165 217 261 261]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12247519]]
+Prediction for eye:  [[ 0.16745104]]
+Prediction for Yawn  [[ 0.00098121]]
+Face Array: [[163 214 265 265]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12176033]]
+Prediction for eye:  [[ 0.19714381]]
+Prediction for Yawn  [[ 0.0011236]]
+Face Array: [[161 211 267 267]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.19596879]]
+Prediction for eye:  [[ 0.15220927]]
+Prediction for Yawn  [[ 0.00055671]]
+Face Array: [[166 214 260 260]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18806909]]
+Prediction for eye:  [[ 0.15982896]]
+Prediction for Yawn  [[ 0.00103583]]
+Face Array: [[157 206 275 275]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.15484059]]
+Prediction for eye:  [[ 0.21019372]]
+Prediction for Yawn  [[ 0.00063622]]
+Face Array: [[157 206 274 274]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.14654562]]
+Prediction for eye:  [[ 0.16310912]]
+Prediction for Yawn  [[ 0.00104473]]
+Face Array: [[158 206 269 269]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.17185153]]
+Prediction for eye:  [[ 0.25558525]]
+Prediction for Yawn  [[ 0.00075127]]
+Face Array: [[165 206 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.20412832]]
+Prediction for eye:  [[ 0.1479049]]
+Prediction for Yawn  [[ 0.00110574]]
+Face Array: [[154 200 274 274]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.17850891]]
+Prediction for eye:  [[ 0.15125415]]
+Prediction for Yawn  [[ 0.00074776]]
+Face Array: [[162 208 258 258]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18219911]]
+Prediction for eye:  [[ 0.16388874]]
+Prediction for Yawn  [[ 0.0013498]]
+Face Array: [[160 206 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.16008948]]
+Prediction for eye:  [[ 0.40477762]]
+Prediction for Yawn  [[ 0.00087484]]
+Face Array: [[159 207 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.26223525]]
+Prediction for eye:  [[ 0.20498344]]
+Prediction for Yawn  [[ 0.00018938]]
+Face Array: [[151 199 275 275]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.17270869]]
+Prediction for eye:  [[ 0.1688782]]
+Prediction for Yawn  [[ 0.00044121]]
+Face Array: [[153 205 266 266]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.17431137]]
+Prediction for eye:  [[ 0.49582312]]
+Prediction for Yawn  [[ 0.00205056]]
+Face Array: [[153 203 265 265]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.21057017]]
+Prediction for eye:  [[ 0.21640676]]
+Prediction for Yawn  [[ 0.00130299]]
+Face Array: [[147 195 278 278]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.24095552]]
+Prediction for Yawn  [[ 0.00528275]]
+Face Array: [[150 199 270 270]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13836648]]
+Prediction for eye:  [[ 0.34797016]]
+Prediction for Yawn  [[ 0.00263636]]
+Face Array: [[155 207 257 257]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.2443635]]
+Prediction for eye:  [[ 0.18844169]]
+Prediction for Yawn  [[ 0.00189859]]
+Face Array: [[159 208 253 253]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.22021233]]
+Prediction for eye:  [[ 0.15161902]]
+Prediction for Yawn  [[ 0.00129912]]
+Face Array: [[160 205 249 249]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18406355]]
+Prediction for eye:  [[ 0.18221705]]
+Prediction for Yawn  [[ 0.00042901]]
+Face Array: [[156 200 258 258]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.25025776]]
+Prediction for eye:  [[ 0.16445208]]
+Prediction for Yawn  [[ 0.00054151]]
+Face Array: [[146 189 278 278]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.31460977]]
+Prediction for eye:  [[ 0.1764975]]
+Prediction for Yawn  [[ 0.00105141]]
+Face Array: [[130 180 299 299]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.17693745]]
+Prediction for eye:  [[ 0.21795356]]
+Prediction for Yawn  [[ 0.5141893]]
+Face Array: [[141 184 286 286]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.15425462]]
+Prediction for eye:  [[ 0.19726518]]
+Prediction for Yawn  [[ 0.01030925]]
+Face Array: [[153 192 266 266]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12807816]]
+Prediction for Yawn  [[ 0.00201566]]
+Face Array: [[123 166 320 320]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.15865937]]
+Prediction for Yawn  [[ 0.65379232]]
+Face Array: [[144 186 275 275]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.14841466]]
+Prediction for Yawn  [[ 0.0008867]]
+Face Array: [[145 189 271 271]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for Yawn  [[ 0.00088447]]
+Face Array: [[147 192 267 267]]
+Blink Counter:  2
+Eye Open!
+Prediction for eye:  [[ 0.07844477]]
+Prediction for Yawn  [[ 0.00158093]]
+Face Array: [[154 195 254 254]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.08458014]]
+Prediction for Yawn  [[ 0.0020249]]
+Face Array: [[146 189 264 264]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.0500359]]
+Prediction for Yawn  [[ 0.00180198]]
+Face Array: [[150 192 258 258]]
+Blink Counter:  2
+Eye Blinked!
+Prediction for eye:  [[ 0.04495422]]
+Prediction for Yawn  [[ 0.0013756]]
+Face Array: [[146 187 270 270]]
+Blink Counter:  3
+Eye Open!
+Prediction for eye:  [[ 0.04188917]]
+Prediction for Yawn  [[ 0.00094081]]
+Face Array: ()
+Face Array: [[150 188 258 258]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.0537134]]
+Prediction for Yawn  [[ 0.00115715]]
+Face Array: ()
+Face Array: ()
+Face Array: [[162 198 235 235]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.05121979]]
+Prediction for Yawn  [[ 0.0011287]]
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: [[152 195 252 252]]
+Blink Counter:  2
+Eye Open!
+Prediction for eye:  [[ 0.05959296]]
+Prediction for Yawn  [[ 0.00068182]]
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: [[155 193 245 245]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.05648563]]
+Prediction for Yawn  [[ 0.00102163]]
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: [[146 204 238 238]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.06708263]]
+Prediction for Yawn  [[ 0.01378151]]
+Face Array: [[149 206 235 235]]
+Blink Counter:  2
+Eye Open!
+Prediction for eye:  [[ 0.05946349]]
+Prediction for eye:  [[ 0.0748671]]
+Prediction for Yawn  [[ 0.01531779]]
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: ()
+Face Array: [[142 200 252 252]]
+Blink Counter:  0
+Prediction for eye:  [[ 0.05300792]]
+Prediction for Yawn  [[ 0.00528195]]
+Face Array: [[140 199 258 258]]
+Blink Counter:  1
+Eye Open!
+Prediction for eye:  [[ 0.06549247]]
+Prediction for Yawn  [[ 0.01001815]]
+Face Array: [[146 205 255 255]]
+Blink Counter:  0
+Prediction for Yawn  [[ 0.01609613]]
+Face Array: [[139 204 259 259]]
+Blink Counter:  1
+Eye Blinked!
+Prediction for eye:  [[ 0.05792453]]
+Prediction for Yawn  [[ 0.01862668]]
+Face Array: [[144 208 250 250]]
+Blink Counter:  2
+Eye Blinked!
+Prediction for eye:  [[ 0.06279475]]
+Prediction for Yawn  [[ 0.01462637]]
+Face Array: [[149 212 243 243]]
+Blink Counter:  3
+Eye Blinked!
+Prediction for eye:  [[ 0.05427339]]
+Prediction for Yawn  [[ 0.01011977]]
+Face Array: [[146 215 248 248]]
+Blink Counter:  4
+Eye Blinked!
+Prediction for eye:  [[ 0.10740465]]
+Prediction for Yawn  [[ 0.0445593]]
+Face Array: [[151 214 249 249]]
+Blink Counter:  5
+Eye Blinked!
+Prediction for eye:  [[ 0.05501723]]
+Prediction for Yawn  [[ 0.05061116]]
+Face Array: [[138 204 274 274]]
+Blink Counter:  6
+Eye Blinked!
+Prediction for eye:  [[ 0.14696905]]
+Prediction for Yawn  [[ 0.04099794]]
+Face Array: [[142 212 259 259]]
+Blink Counter:  7
+Eye Open!
+Prediction for eye:  [[ 0.19220498]]
+Prediction for eye:  [[ 0.2011613]]
+Prediction for Yawn  [[ 0.0380306]]
+Face Array: [[141 214 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.04356071]]
+Prediction for eye:  [[ 0.20104425]]
+Prediction for Yawn  [[ 0.02472598]]
+Face Array: [[145 216 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.21433148]]
+Prediction for eye:  [[ 0.17744371]]
+Prediction for eye:  [[ 0.21199465]]
+Prediction for Yawn  [[ 0.03421833]]
+Face Array: [[140 213 269 269]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.20878969]]
+Prediction for eye:  [[ 0.35181594]]
+Prediction for Yawn  [[ 0.02980621]]
+Face Array: [[150 223 255 255]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11224142]]
+Prediction for eye:  [[ 0.21048093]]
+Prediction for Yawn  [[ 0.02641615]]
+Face Array: [[152 227 249 249]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.29212362]]
+Prediction for eye:  [[ 0.15174924]]
+Prediction for Yawn  [[ 0.03457279]]
+Face Array: [[141 216 267 267]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08201845]]
+Prediction for Yawn  [[ 0.01734416]]
+Face Array: [[143 220 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13925137]]
+Prediction for eye:  [[ 0.07792255]]
+Prediction for Yawn  [[ 0.01874822]]
+Face Array: [[134 211 278 278]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12841038]]
+Prediction for Yawn  [[ 0.01273183]]
+Face Array: [[140 217 268 268]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08463511]]
+Prediction for eye:  [[ 0.09934641]]
+Prediction for Yawn  [[ 0.00712297]]
+Face Array: [[132 209 282 282]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.20103304]]
+Prediction for eye:  [[ 0.16125239]]
+Prediction for Yawn  [[ 0.00715198]]
+Face Array: [[139 217 271 271]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.09259048]]
+Prediction for eye:  [[ 0.1166122]]
+Prediction for Yawn  [[ 0.00556941]]
+Face Array: [[139 222 272 272]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.20449938]]
+Prediction for eye:  [[ 0.11843076]]
+Prediction for Yawn  [[ 0.0218996]]
+Face Array: [[148 230 257 257]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08044859]]
+Prediction for eye:  [[ 0.11131857]]
+Prediction for Yawn  [[ 0.01528971]]
+Face Array: [[146 231 258 258]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.10504962]]
+Prediction for eye:  [[ 0.18891254]]
+Prediction for Yawn  [[ 0.01829311]]
+Face Array: [[142 227 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.07031357]]
+Prediction for eye:  [[ 0.16068587]]
+Prediction for Yawn  [[ 0.00962278]]
+Face Array: [[147 227 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.05979096]]
+Prediction for eye:  [[ 0.192332]]
+Prediction for Yawn  [[ 0.00678431]]
+Face Array: [[148 231 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13344188]]
+Prediction for eye:  [[ 0.1922985]]
+Prediction for Yawn  [[ 0.00932859]]
+Face Array: [[147 232 264 264]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.12470841]]
+Prediction for Yawn  [[ 0.00736339]]
+Face Array: [[146 234 269 269]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.13350926]]
+Prediction for eye:  [[ 0.15586078]]
+Prediction for Yawn  [[ 0.00660652]]
+Face Array: [[141 230 279 279]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.1023215]]
+Prediction for eye:  [[ 0.16412963]]
+Prediction for Yawn  [[ 0.00421242]]
+Face Array: [[151 241 262 262]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.06481903]]
+Prediction for eye:  [[ 0.21408045]]
+Prediction for Yawn  [[ 0.00646474]]
+Face Array: [[151 243 266 266]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.10009508]]
+Prediction for eye:  [[ 0.2303732]]
+Prediction for Yawn  [[ 0.00842811]]
+Face Array: [[154 246 265 265]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.27473357]]
+Prediction for Yawn  [[ 0.0047255]]
+Face Array: [[156 250 263 263]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08644164]]
+Prediction for eye:  [[ 0.21713382]]
+Prediction for Yawn  [[ 0.0041255]]
+Face Array: [[155 247 274 274]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.24406688]]
+Prediction for eye:  [[ 0.08192275]]
+Prediction for Yawn  [[ 0.00360455]]
+Face Array: [[159 252 268 268]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.24317163]]
+Prediction for eye:  [[ 0.14568706]]
+Prediction for Yawn  [[ 0.00209628]]
+Face Array: [[158 251 272 272]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.08002049]]
+Prediction for eye:  [[ 0.14989877]]
+Prediction for Yawn  [[ 0.00218322]]
+Face Array: [[166 257 264 264]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.21723473]]
+Prediction for eye:  [[ 0.14482303]]
+Prediction for Yawn  [[ 0.00284509]]
+Face Array: [[158 254 276 276]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.16221398]]
+Prediction for eye:  [[ 0.13819887]]
+Prediction for Yawn  [[ 0.00091111]]
+Face Array: [[159 253 279 279]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11058941]]
+Prediction for eye:  [[ 0.1609427]]
+Prediction for Yawn  [[ 0.00095305]]
+Face Array: [[162 257 276 276]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18191496]]
+Prediction for eye:  [[ 0.10733885]]
+Prediction for Yawn  [[ 0.00106899]]
+Face Array: [[161 253 282 282]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.10537457]]
+Prediction for eye:  [[ 0.1567322]]
+Prediction for Yawn  [[ 0.00079618]]
+Face Array: [[164 256 276 276]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.14094205]]
+Prediction for eye:  [[ 0.30725342]]
+Prediction for Yawn  [[ 0.00343459]]
+Face Array: [[164 255 279 279]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.18158451]]
+Prediction for eye:  [[ 0.07834185]]
+Prediction for Yawn  [[ 0.00433615]]
+Face Array: [[169 259 273 273]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.25606272]]
+Prediction for eye:  [[ 0.13052782]]
+Prediction for Yawn  [[ 0.0011537]]
+Face Array: [[167 255 278 278]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11255649]]
+Prediction for eye:  [[ 0.28048432]]
+Prediction for Yawn  [[ 0.00437257]]
+Face Array: [[168 255 276 276]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.37342012]]
+Prediction for Yawn  [[ 0.01062789]]
+Face Array: [[173 261 269 269]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.31639665]]
+Prediction for eye:  [[ 0.1136443]]
+Prediction for Yawn  [[ 0.00900389]]
+Face Array: [[173 262 273 273]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.11770537]]
+Prediction for eye:  [[ 0.38515434]]
+Prediction for Yawn  [[ 0.00378976]]
+Face Array: [[177 267 265 265]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.22336879]]
+Prediction for eye:  [[ 0.08799381]]
+Prediction for Yawn  [[ 0.00601557]]
+Face Array: [[180 272 261 261]]
+Blink Counter:  0
+Eye Open!
+Prediction for eye:  [[ 0.26179612]]
+Prediction for Yawn  [[ 0.01372715]]
+Traceback (most recent call last):
+  File "D:/innovation/innovate/Extraction.py", line 74, in <module>
+    img = resizing(img, resize_image_px)
+  File "D:\innovation\innovate\Utils.py", line 20, in resizing
+    r = pixel_length / image.shape[1]
+AttributeError: 'NoneType' object has no attribute 'shape'
+
+Process finished with exit code 1
