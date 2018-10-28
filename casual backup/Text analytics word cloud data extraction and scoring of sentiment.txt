@@ -1,0 +1,192 @@
+require(httr)
+require(XML)
+
+getwd()
+setwd("D:/RProjects/Wordcloud/Harman")
+
+# change the URL here this script only works for www.subaruoutback.org
+# changed the file name by the main link to be able to recognize it
+
+dat <- readLines("http://www.subaruoutback.org/forums/69-audio-video-security-navigation/17351-replace-hk-amp.html", warn=FALSE)
+
+#index<-"http://www.subaruoutback.org/forums/69-audio-video-security-navigation/147249-2014-nav-favorites.html"
+
+# data.frame(c())
+#write.table(index, file = "D:/RProjects/Wordcloud/Harman/web_index.txt",append=T,row.names=FALSE)
+#txt <- c("Hallo", "World")
+#writeLines(txt, "outfile.txt") or below
+#txt <- "Hallo\nWorld"
+#writeLines(txt, "outfile.txt")  or below
+#sink("outfile.txt")
+# cat("hello")
+# cat("\n")
+# cat("world")
+# sink()> file.show("outfile.txt")
+#hello
+#world
+
+#using (System.IO.StreamReader Reader = new System.IO.StreamReader("C://myfile2.txt"))
+ #{
+ # StringBuilder Sb = new StringBuilder();
+#  string fileContent = Reader.ReadToEnd();
+ # if (fileContent.Contains("your search text"))
+#    return true;
+ # else
+ #   return false;
+#}
+
+
+# we need to check and create a program to put the URL in a text file and also a condition which will check the same if it is already available it will not execute further and stop 
+raw2 <- htmlTreeParse(dat, useInternalNodes = TRUE)
+data <- xpathApply(raw2,"//div[starts-with(@id, 'post_message')]",xmlValue)
+
+data <- unlist(data)
+
+data
+
+data.audio <- data[grep("audio|stereo",data)]
+write.table(data.audio, file = "D:/RProjects/Wordcloud/Harman/Audio_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.bluetooth <- data[grep("bluetooth", data)]
+data.bluetooth
+
+#data.bad.bt <- data.bluetooth[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.bluetooth)]
+#data.bad.bt
+#data.bt <-  data.frame(data.bad.bt,stringsAsFactors = F)
+
+write.table(data.bluetooth, file = "D:/RProjects/Wordcloud/Harman/BT_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.navigation <- data[grep("navigation|nav",data)]
+data.navigation
+#data.bad.nav <- data.navigation[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.navigation)]
+#data.bad.nav
+write.table(data.navigation,file="D:/RProjects/Wordcloud/Harman/NAV_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.voice<- data[grep("voice|voice recognition|recognition|radio",data)]
+data.voice
+
+#data.bad.voice <- data.voice[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.voice)]
+#data.bad.voice
+write.table(data.voice,file="D:/RProjects/Wordcloud/Harman/VC_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+
+
+
+#*******************************************************************************************************
+
+
+
+# toread the text file first
+
+lines<- readLines("D:/RProjects/Wordcloud/Harman/data.txt",  warn = TRUE,
+                   skipNul = FALSE)
+
+
+# To grep lines seperately into a file
+KP<-lines[grep("[A-Z][a-z]",lines)]
+head(KP)
+write.table(KP, file = "D:/RProjects/Wordcloud/Harman/test.txt",append=T,row.names=FALSE)
+
+# to remove specific words from the txt file
+docs <- tm_map(KP, removeWords, c ("department" , "email"))
+
+
+****************************************************Scoring Sentiment****************************************************
+
+  
+  
+  
+score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
+{
+  require(plyr)
+  require(stringr)
+  
+  # we got a vector of sentences. plyr will handle a list
+  # or a vector as an "l" for us
+  # we want a simple array ("a") of scores back, so we use 
+  # "l" + "a" + "ply" = "laply":
+  scores = laply(sentences, function(sentence, pos.words, neg.words) {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    # and convert to lower case:
+    sentence = tolower(sentence)
+    
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+    pos.matches = match(words, pos.words)
+    neg.matches = match(words, neg.words)
+    
+    # match() returns the position of the matched term or NA
+    # we just want a TRUE/FALSE:
+    pos.matches = !is.na(pos.matches)
+    neg.matches = !is.na(neg.matches)
+    
+    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    score = sum(pos.matches) - sum(neg.matches)
+    
+    return(score)
+  }, pos.words, neg.words, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+
+
+
+
+
+****************************************************preparing world cloud********************************
+
+install.packages(wordcloud)
+install.packages(RColorBrewer)
+install.packages(tm)
+library(wordcloud)
+Loading required package: RColorBrewer
+library(RColorBrewer)
+mydata = read.table("data.txt")
+
+Error in file(file, "rt") : cannot open the connection
+
+mydata = read.table("D:/RProjects/Wordcloud/harman/data.txt")
+library(tm)
+
+Loading required package: NLP
+
+sms_corpus <- Corpus(VectorSource(mydata))
+corpus_clean <- tm_map(sms_corpus, tolower)
+corpus_clean <- tm_map(corpus_clean, removeNumbers)
+corpus_clean <- tm_map(corpus_clean, removeWords, stopwords()) # this will clean the bad words like suck etc
+corpus_clean <- tm_map(corpus_clean, removePunctuation)
+corpus_clean <- tm_map(corpus_clean, stripWhitespace)# this will remove white space
+sms_dtm <- DocumentTermMatrix(corpus_clean) # this will create a matrix with frequency of each words
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+sms_dtm <- TermDocumentMatrix(corpus_clean)
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+corpus_clean <- tm_map(corpus_clean, PlainTextDocument)
+sms_dtm <- DocumentTermMatrix(corpus_clean)
+sms_dtm = as.matrix(sms_dtm)
+pal <- brewer.pal(9, "Dark2")
+pal <- pal[-(1:2)]
+
+
+wordcloud(corpus_train, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+Error in wordcloud(corpus_train, min.freq = 2, max.words = 30, random.order = T,  : 
+                     object 'corpus_train' not found
+                  wordcloud(corpus_clean, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                  wordcloud(corpus_clean, min.freq=2,random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                   
+                   
+           
+
+

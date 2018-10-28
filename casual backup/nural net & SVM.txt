@@ -1,0 +1,171 @@
+
+
+
+######******%%%%%%%%%%%%%%%%%%%%%%%%%%%% practice 09/03/2015**** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%on Neural Network and SVM
+
+getwd()
+
+setwd("D:/RProjects/machine learning/Nural Network")
+
+concrete <- read.csv("concrete.csv")
+
+str(concrete)
+
+# to make the variables as standard normal variable we do transformation and hence defining a program
+
+normalize <- function(x)
+
+{return((x-min(x))/(max(x)-min(x)))}
+
+
+concrete_norm <- as.data.frame (lapply(concrete,normalize))
+
+# this function can be applied in every column using lapply() command
+
+concrete_norm <- as.data.frame (lapply(concrete,normalize))
+
+summary(concrete_norm$strength)
+
+#Creating two data sets for train and validation 
+
+concrete_train <-concrete_norm[1:773, ]
+concrete_test <-concrete_norm[774:1030, ]
+
+# the functions we are going to use is available in "neuralnet" and henceneed to be installed.
+
+install.packages("neuralnet")
+library(neuralnet)
+# syntex below 
+# m<- neuralnet(target~predictors, data= mydaya, hidden=1) this is used to train
+# p<- compute(m, test) this is used to make prediction
+
+
+# lets use only one single hidden node
+
+concrete_model <- neuralnet(formula = strength ~ cement + slag +
+                              ash + water + superplastic + 
+                              coarseagg + fineagg + age,
+                            data = concrete_train)
+plot (concrete_model)
+
+str(concrete_train)
+??
+
+
+## Step 4: Evaluating model performance ----
+# obtain model results by applying the model on the test data 
+
+model_results <- compute(concrete_model, concrete_test[1:8])
+
+# asigning the net result to a new variable
+
+predicted_strength <- model_results$net.result
+
+# checking the predicted vs actual correlation to see the association
+cor(predicted_strength, concrete_test$strength)
+
+# the above correlation result of .8 is fairly good however we need to build more complex 
+
+
+concrete_mode2 <- neuralnet(formula = strength ~ cement + slag +
+                              ash + water + superplastic + 
+                              coarseagg + fineagg + age,
+                            data = concrete_train, hidden=5)
+
+
+plot(concrete_mode2)
+
+# after plotting check the reported error (SSE= 2.44) also the no of training step has increased from 3222 to 7230
+
+# again evaluating the model for the 2nd one as we have increased the hidden nodes to 5
+
+model_results2 <- compute(concrete_mode2, concrete_test[1:8])
+predicted_strength2 <- model_results2$net.result
+cor(predicted_strength2, concrete_test$strength)
+
+# num <- 2
+#op <- which(grepl((letters[num]), test$wt)) thi is used to find char value VVI you can even put a loop to run it from 1-26 letters from A-Z
+
+
+
+
+
+
+
+
+####  %%%%%%%%%%%%%%%%%%%%%%%%%Support Vector Machines %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-------------------
+
+
+
+
+
+
+## Example: Optical Character Recognition ----
+
+## Step 2: Exploring and preparing the data ----
+# read in data and examine structure
+letters <- read.csv("letterdata.csv")
+str(letters)
+
+# divide into training and test data
+letters_train <- letters[1:16000, ]
+letters_test  <- letters[16001:20000, ]
+
+## Step 3: Training a model on the data ----
+# begin by training a simple linear SVM
+
+install.packages("kernlab")
+library(kernlab)
+letter_classifier <- ksvm(letter ~ ., data = letters_train,
+                          kernel = "vanilladot")
+
+# look at basic information about the model
+letter_classifier
+
+## Step 4: Evaluating model performance ----
+# predictions on testing dataset
+letter_predictions <- predict(letter_classifier, letters_test)
+
+head(letter_predictions)
+
+table(letter_predictions, letters_test$letter)
+
+# look only at agreement vs. non-agreement
+# construct a vector of TRUE/FALSE indicating correct/incorrect predictions
+agreement <- letter_predictions == letters_test$letter
+table(agreement)
+prop.table(table(agreement))
+
+## Step 5: Improving model performance ----
+letter_classifier_rbf <- ksvm(letter ~ ., data = letters_train, kernel = "rbfdot")
+letter_predictions_rbf <- predict(letter_classifier_rbf, letters_test)
+
+agreement_rbf <- letter_predictions_rbf == letters_test$letter
+table(agreement_rbf)
+prop.table(table(agreement_rbf))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

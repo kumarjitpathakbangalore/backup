@@ -1,0 +1,48 @@
+install.packages(httr)
+install.packages(XML)
+# do al the installation manually from menu.. else it will not work
+
+
+
+require(httr)
+require(XML)
+
+setInternet2()
+
+
+
+
+# change the URL here this script only works for www.suburuforrester.org
+
+dat <- readLines("http://www.subaruforester.org/vbulletin/f88/2011-2012-forester-bluetooth-problems-85461/index8.html", warn=FALSE)
+raw2 <- htmlTreeParse(dat, useInternalNodes = TRUE) # keep all child nodes, xml will have parrent tags anbd cild tags
+data <- xpathApply(raw2,"//div[starts-with(@id, 'post_message')]",xmlValue) # parse the data and keep only data with tag "Post-message" this will be different for ifferent website.
+# post_massaage, massage, information will differ from website to website. We need to chek this.
+
+
+data <- unlist(data)
+
+data
+data.bluetooth <- data[grep("bluetooth", data)]
+data.bluetooth
+
+data.bad.bt <- data.bluetooth[grep("awful|bad|worthless|junk|problems|doesn't work|disappointing|upset|sucks|crazy|headace|useless|horrendous|crap|terrible|no different|not working",data.bluetooth)]
+data.bad.bt
+data.bt <-  data.frame(data.bad.bt,stringsAsFactors = F)
+
+write.table(data.bt$data.bad.bt, file = "D:/RProjects/Wordcloud/Harman/BT_SubuKP.txt",append=T,row.names=FALSE)
+
+data.navigation <- data[grep("navigation|nav",data)]
+data.navigation
+data.bad.nav <- data.navigation[grep("awful|bad|worthless|junk|problems|doesn't work|disappointing|horrendous|crap|headace|upset|sucks|crazy|useless|terrible|no different|not working",data.navigation)]
+data.bad.nav
+write.table(data.bad.nav,file="D:/RProjects/Wordcloud/Harman/NAV_Subukp.txt",append=T,row.names=FALSE)
+
+data.voice<- data[grep("voice|voice recognition|recognition|radio",data)]
+data.voice
+
+data.bad.voice <- data.voice[grep("awful|bad|worthless|junk|problems|doesn't work|disappointing|upset|useless|sucks|headace|crazy|horrendous|crap|terrible|no different|not working",data.voice)]
+data.bad.voice
+write.table(data.bad.voice,file="D:/RProjects/Wordcloud/Harman/VC_Subukp.txt",append=T,row.names=FALSE)
+
+

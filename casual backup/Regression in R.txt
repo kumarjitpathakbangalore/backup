@@ -1,0 +1,197 @@
+
+library("data.table")
+install.packages("data.table")
+
+
+
+#REGRESSION.....
+
+dat<- read.csv("dat_reg.csv", header=TRUE)
+str(dat)
+table(dat$Origin)
+table(dat$Motorway)
+table(dat$DayOfWeek)
+
+
+dat$weekday[dat$Flag=="1"] <-'Weekday'
+dat$weekday[dat$Flag=="2"] <-'Weekday'
+dat$weekday[dat$Flag=="3"] <-'Weekday'
+dat$weekday[dat$Flag=="4"] <-'Weekday'
+dat$weekday[dat$Flag=="5"] <-'Weekday'
+dat$weekday[dat$Flag=="6"] <-'Weekend'
+dat$weekday[dat$Flag=="7"] <-'Weekend'
+
+Avgdelay<-aggregate(dat,FUN=mean,by)
+
+
+library(plyr)
+install.packages("plyr")
+
+# to get mean by class of a variable....
+
+ddply(dat, .(weekday), colwise(mean, .(Delay_Actual)))
+
+
+
+#Initial Regression Model
+
+reg1<-lm(Delay_Actual~.,data=dat[,-c(4,7,9)])
+
+# in the above code we have put ~. just to state all other variable are independent and then with C[,-c(7:8)]
+
+
+
+summary(reg1)
+
+reg1$coef
+AIC(reg1)
+BIC(reg1)
+# this gives the AIC BIC of the first model
+
+
+#next nodel for interraction effect of Vehicle speed and other variable...
+
+reg2<- lm(Delay_Actual~Flag+EngineStar_time+Vehicle_Speed+Motorway+Origin+Vehicle_Speed*EngineStar_time, data=dat)
+summary(reg2)
+AIC(reg2)
+BIC(reg2)
+
+
+# including polynomial term on the regression to increase R2
+
+reg3<- lm(Delay_Actual~Flag+EngineStar_time+Vehicle_Speed+Motorway+Origin+Vehicle_Speed*EngineStar_time+I(Vehicle_Speed^2), data=dat)
+
+
+summary(reg3)
+AIC(reg3)
+BIC(reg3)
+
+library("car")
+install.packages("car")
+
+
+
+
+
+
+
+#RANDOM FOREST
+#RANDOM FOREST
+
+RFdata<- read.csv("LongUser_Trip_Information.csv", header=TRUE)
+
+
+#changing engine start time anmd stop time in minutes 
+  RFdata$EngineStartTime <- as.POSIXct(RFdata$EngineStartTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStartTime);
+RFdata$EngineStartTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+RFdata$EngineStopTime <- as.POSIXct(RFdata$EngineStopTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStopTime);
+RFdata$EngineStopTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+# only for curent format--- below
+
+RFdata$EngineStartTime <- as.POSIXct(RFdata$EngineStartTime, format = "%H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStartTime);
+RFdata$EngineStartTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+RFdata$EngineStopTime <- as.POSIXct(RFdata$EngineStopTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStopTime);
+RFdata$EngineStopTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+# dummy variable to detect massage activeted or not with condition
+RFdata$Act<-ifelse(RFdata$ActivationCount>0,1,0)
+
+
+install.packages("randomForest")
+library("randomForest")
+install.packages("ROCR")
+library("ROCR")
+
+set.seed(1000)
+
+#selecting the variable for RFM
+
+  dat1<-RFdata[,c("DayOfWeek","Destination","LogStartSecsSinceMorning","Motorway",
+               "Origin","TripDuration","Act")]
+
+#  set.seed(1000)
+
+# dividing the training and testing set
+  set.seed(10)
+sub <- sample(nrow(dat1), floor(nrow(dat1) * 0.8))
+training <- dat1[sub, ]
+testing <- dat1[-sub, ]
+
+
+
+??tuneRF
+bestmtry <- tuneRF(training[,-7],training[,7], ntreeTry=100, 
+                   stepFactor=1.5,improve=0.1, trace=TRUE, plot=TRUE, dobest=FALSE)
+??randomForest
+
+adult.rf <-randomForest(factor(Act)~.,data=training, mtry=2, ntree=1000, 
+                        keep.forest=TRUE, importance=TRUE)
+
+#variable Importance
+
+rk<-round(importance(adult.rf), 2)
+
+importance(adult.rf)
+varImpPlot(adult.rf)
+
+??prediction
+
+#another way robust ... for validation
+Description
+This function shows the cross-validated prediction performance of models with sequentially reduced
+number of predictors (ranked by variable importance) via a nested cross-validation procedure.
+#SYNTAX
+
+rk<-rfcv(training[,1:6], training[,7], cv.fold=5, scale="log", step=0.5,
+         mtry=function(p) max(1, floor(sqrt(p))), recursive=FALSE)
+# explanation
+#trainx -----matrix or data frame containing columns of predictor variables
+#trainy ------vector of response, must have length equal to the number of rows in trainx
+#cv.fold ------number of folds in the cross-validation
+#scale --------if "log", reduce a fixed proportion (step) of variables at each step, otherwise
+#reduce step variables at a time
+#step------ if log=TRUE, the fraction of variables to remove at each step, else remove this
+#many variables at a time how many % of variablr you want in the mejor importance criteria
+#mtry --------a function of number of remaining predictor variables to use as the mtry parameter
+#in the randomForest call
+#recursive------ whether variable importance is (re-)assessed at each step of variable reduction
+#... other arguments passed on to randomForest
+
+# Below two commands fives specificaly wahat are the significant variables.
+
+
+
+print(rk$n.var)
+print(rk$error.cv)
+
+
+# predict the output 
+
+predict(adult.rf,testing,type="response")
+
+
+# no other package worked for ROC and confusion.... Hence tried with e1071 and caret
+
+install.packages("e1071")
+install.packages("caret")
+ 
+
+setInternet2()
+  library(e1071)
+library("caret")
+testing$act<-factor(testing$Act)
+testing<-testing[,-7]
+testp4<-as.data.frame(predict(adult.rf,testing,type='response'))
+names(testp4)<-"predicted"
+actual<-as.data.frame(testing$act)
+names(actual)<-"Actual"
+ac_pred<-cbind(actual,testp4)
+tab<-table(ac_pred$Actual,ac_pred$predicted)
+confusionMatrix(tab)

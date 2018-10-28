@@ -1,0 +1,129 @@
+#__________________________Association Analysis ARULES______________________
+
+getwd()
+setwd("F:/Practice R")
+arul <- read.csv("association_analysis_data.csv",header=T)
+
+dat<-arul
+
+head(arul)
+tail(arul)
+str(arul)
+
+
+library(sqldf)
+library(arulesViz)
+library(arules)
+install.packages("arulesViz")
+
+
+dat1=dat[,c("basket_id","description")]
+
+#dat1$basket_id=as.numeric(dat1$basket_id)
+#dat1 <- dat1[order(dat1$basket_id),]
+dat1=dat[,c("basket_id","description")]
+
+dat1=transform(dat1,tag=paste0(dat1$basket_id,dat1$description))
+
+##removing the duplicate transactions
+dat1<-sqldf("select distinct * from dat1" )
+dat1=dat1[,c(1,2)]
+
+#aggregate all transacations related to a single product
+aggr_data <- split(dat1$description, dat1$basket_id)
+
+head(aggr_data)
+
+
+#convert aggr_data set to transaction object required for apriori algorithm
+txn <- as(aggr_data,"transactions")
+
+## Summary
+
+summary(txn)
+
+#output
+#4109 rows (elements/itemsets/transactions) and
+#12229 columns (items) and a density of 0.0008319376 
+# density =0.000831 - proportion of non zero matrix cell
+
+## item purchased during the time
+# 4109*12229*0.000831 = 41804.001 (nu,ber of rows in transaction data)
+
+inspect(txn[1:5])
+itemFrequency(txn[, 1:5])
+
+itemFrequencyPlot(txn, support = 0.02)
+itemFrequencyPlot(txn, topN=20)
+
+
+#____________________Code from RONAK
+
+# Create an item frequency plot for the top 20 items
+itemFrequencyPlot(txn,topN=20,type="absolute")
+
+
+# Get the rules
+rules <- apriori(txn, parameter = list(supp = 0.001, conf = 0.8))
+
+# Show the top 5 rules, but only 2 digits
+options(digits=2)
+inspect(rules[1:5])
+
+##If someone buys yogurt and cereals, they are 81% likely to buy whole milk too.
+
+summary(rules)
+#The number of rules generated: 410
+#The distribution of rules by length: Most rules are 4 items long
+#The summary of quality measures: interesting to see ranges of support, lift, and confidence.
+#The information on the data mined: total data mined, and minimum parameters.
+
+##we want to have the most likely rules
+rules<-sort(rules, by="confidence", decreasing=TRUE)
+inspect(rules[1:5])
+
+##Rule 4 is perhaps excessively long. Lets say you wanted more concise rules.
+##rules <- apriori(Groceries, parameter = list(supp = 0.001, conf = 0.8,maxlen=3))
+
+##Sometimes, rules will repeat. Remove redundant rules generated.
+
+subset.matrix <- is.subset(rules, rules)
+subset.matrix[lower.tri(subset.matrix, diag=T)] <- NA
+redundant <- colSums(subset.matrix, na.rm=T) >= 1
+rules.pruned <- rules[!redundant]
+rules<-rules.pruned
+inspect(rules[1:5])
+
+###Targeting Items
+##1.What are customers likely to buy before buying whole milk?
+##2.What are customers likely to buy if they purchase whole milk?
+
+#Answering the first question we adjust our apriori() function as follows:
+rules1<-apriori(data=Groceries, parameter=list(supp=0.001,conf = 0.08), 
+                appearance = list(default="lhs",rhs="whole milk"),
+                control = list(verbose=F))
+rules1<-sort(rules1, decreasing=TRUE,by="confidence")
+inspect(rules1[1:5])
+
+###we can set the left hand side to be “whole milk” and find its antecedents.
+#Note the following:
+#We set the confidence to 0.15 since we get no rules with 0.8
+#We set a minimum length of 2 to avoid empty left hand side items
+
+rules2<-apriori(data=Groceries, parameter=list(supp=0.001,conf = 0.15,minlen=2), 
+                appearance = list(default="rhs",lhs="whole milk"),
+                control = list(verbose=F))
+rules2<-sort(rules2, decreasing=TRUE,by="confidence")
+inspect(rules2[1:5])
+
+###Visualization
+library("RColorBrewer")
+plot(rules,control=list(col=brewer.pal(11,"Spectral")),main="")
+
+#Plot graph-based visualisation:
+subrules2 <- head(sort(rules, by="lift"), 10)
+plot(subrules2, method="graph",control=list(type="items",main=""))
+
+ronak<- as(rules, "data.frame")
+write.csv(ronak,"D:/R Practice/Market Basket Analysis/rules1.csv")
+

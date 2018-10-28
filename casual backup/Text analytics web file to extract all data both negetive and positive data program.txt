@@ -1,0 +1,153 @@
+require(httr)
+require(XML)
+
+getwd()
+setwd("D:/RProjects/Wordcloud/Harman")
+
+# change the URL here this script only works for www.subaruoutback.org
+# changed the file name by the main link to be able to recognize it
+
+dat <- readLines("http://www.subaruoutback.org/forums/104-gen-4-2010-2014/22586-440-watt-9-speaker-harman-kardon-premium-audio-system-sound-quality.html", warn=FALSE)
+raw2 <- htmlTreeParse(dat, useInternalNodes = TRUE)
+data <- xpathApply(raw2,"//div[starts-with(@id, 'post_message')]",xmlValue)
+
+data <- unlist(data)
+
+data
+
+data.audio <- data[grep("audio|stereo",data)]
+write.table(data.audio, file = "D:/Projects/harman/Audio_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.bluetooth <- data[grep("bluetooth", data)]
+data.bluetooth
+
+#data.bad.bt <- data.bluetooth[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.bluetooth)]
+#data.bad.bt
+#data.bt <-  data.frame(data.bad.bt,stringsAsFactors = F)
+
+write.table(data.bluetooth, file = "D:/Projects/harman/BT_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.navigation <- data[grep("navigation|nav",data)]
+data.navigation
+#data.bad.nav <- data.navigation[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.navigation)]
+#data.bad.nav
+write.table(data.navigation,file="D:/Projects/harman/NAV_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.voice<- data[grep("voice|voice recognition|recognition|radio",data)]
+data.voice
+
+#data.bad.voice <- data.voice[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.voice)]
+#data.bad.voice
+write.table(data.voice,file="D:/Projects/harman/VC_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***********************************************************************************************************************
+
+
+require(httr)
+require(XML)
+
+getwd()
+setwd("D:/RProjects/Wordcloud/Harman")
+
+# change the URL here this script only works for www.subaruoutback.org
+# changed the file name by the main link to be able to recognize it
+
+dat <- readLines("http://www.subaruoutback.org/forums/69-audio-video-security-navigation/89537-2013-fujitsu-ten-hk-nav-audio-every-button-push-screech.html", warn=FALSE)
+
+#index<-"http://www.subaruoutback.org/forums/69-audio-video-security-navigation/147249-2014-nav-favorites.html"
+
+# data.frame(c())
+#write.table(index, file = "D:/RProjects/Wordcloud/Harman/web_index.txt",append=T,row.names=FALSE)
+#txt <- c("Hallo", "World")
+#writeLines(txt, "outfile.txt") or below
+#txt <- "Hallo\nWorld"
+#writeLines(txt, "outfile.txt")  or below
+#sink("outfile.txt")
+# cat("hello")
+# cat("\n")
+# cat("world")
+# sink()> file.show("outfile.txt")
+#hello
+#world
+
+#using (System.IO.StreamReader Reader = new System.IO.StreamReader("C://myfile2.txt"))
+ #{
+ # StringBuilder Sb = new StringBuilder();
+#  string fileContent = Reader.ReadToEnd();
+ # if (fileContent.Contains("your search text"))
+#    return true;
+ # else
+ #   return false;
+#}
+
+
+# we need to check and create a program to put the URL in a text file and also a condition which will check the same if it is already available it will not execute further and stop 
+raw2 <- htmlTreeParse(dat, useInternalNodes = TRUE)
+data <- xpathApply(raw2,"//div[starts-with(@id, 'post_message')]",xmlValue)
+
+data <- unlist(data)
+
+data
+
+data.audio <- data[grep("audio|stereo",data)]
+write.table(data.audio, file = "D:/RProjects/Wordcloud/Harman/Audio_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.bluetooth <- data[grep("bluetooth", data)]
+data.bluetooth
+
+#data.bad.bt <- data.bluetooth[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.bluetooth)]
+#data.bad.bt
+#data.bt <-  data.frame(data.bad.bt,stringsAsFactors = F)
+
+write.table(data.bluetooth, file = "D:/RProjects/Wordcloud/Harman/BT_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.navigation <- data[grep("navigation|nav",data)]
+data.navigation
+#data.bad.nav <- data.navigation[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.navigation)]
+#data.bad.nav
+write.table(data.navigation,file="D:/RProjects/Wordcloud/Harman/NAV_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.voice<- data[grep("voice|voice recognition|recognition|radio",data)]
+data.voice
+
+#data.bad.voice <- data.voice[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.voice)]
+#data.bad.voice
+write.table(data.voice,file="D:/RProjects/Wordcloud/Harman/VC_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+

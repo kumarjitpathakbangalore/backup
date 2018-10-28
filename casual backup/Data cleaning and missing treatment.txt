@@ -1,0 +1,365 @@
+
+
+#practice 04/03/2015
+
+
+getwd()
+
+setwd("D:")
+
+data(mtcars)
+
+head(mtcars)
+
+install.packages("datasets")
+library(datasets)
+
+data()
+
+
+??dataframe
+
+ls()
+
+load("file.RData")
+data(mtcars)
+mtcars
+sum(mpg)
+??sum
+colsums(mpg)
+tq<- c(mtcars)
+tq
+sum(mpg)
+
+
+getwd()
+write.csv(mtcars,"abc.csv")
+
+install.packages("rJava")
+
+library(xlsx)
+write.xlsx(mtcars, "c:/mtcars.xlsx") 
+
+
+mydata <- read.csv("D:/abc1.csv", header=TRUE)
+mydata
+
+summary(mydata)
+
+??sapply
+
+
+mydata$sum <- mydata$x1 + mydata$x2
+mydata
+
+# how to create new variables
+
+attach(mydata)
+mydata$sum <- cyl + hp
+mydata$mean <- (cyl + hp)/2
+mydata
+
+class(mydata$cyl)
+
+levels(mydata$X)
+
+names(mydata)
+
+#to change the class of any variable -data type
+
+de <- as.numeric(as.character(mydata$cyl))
+class(de)
+
+#to do mising value treatment and replace by mean
+
+ave_cyl <- ave(mydata$cyl, mydata$X, FUN =function(x) mean(x, na.rm = TRUE))
+mydata$cyl <- ifelse(is.na(mydata$cyl), ave_cyl, mydata$cyl)
+summary(mydata$cyl)
+
+summary(mydata$X)
+summary(mydata)
+
+
+ave_mpg <- ave(mydata$mpg, mydata$X, FUN =function(x) mean(x, na.rm = TRUE))
+mydata$mpg <- ifelse(is.na(mydata$mpg), ave_mpg, mydata$mpg)
+summary(mydata$mpg)
+
+#levels(oswego$age)    # the original levels of the factor
+#levels(oswego$age)[levels(oswego$age)=="seven"] <- "7"  # change the level "seven" to "7"
+
+
+str(mydata)
+
+mydata[!is.numeric(mydata$wt)]
+
+mydata$wt <- is.character(mydata$wt)
+
+which(as.numeric(mydata$wt))
+## 5 9
+
+
+
+
+
+
+
+
+
+
+data(iris)
+iris
+Sepal.iris = iris[c("Sepal.Length", "Sepal.Width")]
+
+prac <- data(iris)
+
+str(Sepal.iris)
+'data.frame'
+
+Five.Sepal.iris = iris[1:5, c("Sepal.Length", "Sepal.Width")]
+str(Five.Sepal.iris)
+str(setosa.data)
+setosa.data = iris[iris$Species=="setosa",1:5]
+
+str(iris)
+pk<-which(iris$Species=="setosa", 1:5)
+str(pk)
+??levels
+
+levels(iris$Species)
+
+setosa.data = iris[which(iris$Species=="setosa"),1:5]
+str(setosa.data)
+
+Sepal.data = subset(iris, select=c("Sepal.Length", "Sepal.Width"))
+
+str(iris)
+#another way to do it without using subset function
+dat1<- iris[iris$Species=="setosa", c(1,2) ]
+dat1
+
+
+
+
+# practice 05/03/2015
+
+
+getwd()
+
+# if you copy pest the path you need to chnge \ to / else it wil not work
+setwd("D:/RProjects/practice 1")
+
+data(iris)
+
+iris
+
+
+pk<- data(iris)
+
+# to assign intO A new file here below iris[no of obs , no of columns]
+pk.data = iris[,1:5]
+kp.data = iris[ , ]
+
+pk
+write.csv(pk.data,"irisprac.csv")
+
+
+
+# to import a file back to R environment
+
+??read.csv()
+pk.data<- read.csv("irisprac1.csv", header= TRUE, )
+pk
+pk.data
+str(pk.data)
+
+class(pk.data)
+levels(pk.data)
+summary(pk.data)
+
+head(pk.data[2:5])
+dat <- pk.data[2:5]
+
+
+#to do mising value treatment and replace by mean
+
+which(is.na(pk.data$Sepal.Length))
+
+pk.data$Sepal.Length[is.na(pk.data$Sepal.Length)] <- mean(na.omit(pk.data$Sepal.Length))
+
+# to change all NA to 0
+
+
+# functions to replace all NA to th average
+replace_avg <- function(x)
+{
+  m <- na.omit(x)
+  x[is.na(x)] <- m
+}
+
+apply(dat, 2, replace_avg)
+
+#need to check sub an gsub function
+??sub
+
+pk.data
+
+#to do 2-sample T-test between two different type of specis 
+
+t.test(iris$Petal.Width[iris$Species=="setosa"], 
+       +        iris$Petal.Width[iris$Species=="versicolor"])
+
+# to perform correlation test on the same
+
+cor.test(iris$Sepal.Length, iris$Sepal.Width)
+
+
+# to find the frequency for a variable
+table.iris = table(iris$Species)
+table.iris
+
+
+# to se the Pie chart
+
+pie(table.iris)
+
+# to do Histogram
+hist(iris$Sepal.Length, breaks=100))
+
+
+# to do BOXPLOT
+boxplot(Petal.Width ~ Species, data = iris)
+boxplot.stats(iris$Petal.Width)
+??boxplot
+
+# boxplot(File name, use.cols = TRUE, ...)
+
+boxplot(iris, main = "boxplot.matrix(...., main = ...)",
+        notch = TRUE, col = 1:4
+# Scatter plot        plot(x=the variable you want in x axis, y= variable you want in y axis, col= the lassification variable )
+plot(x=iris$Petal.Length, y=iris$Petal.Width, col=iris$Species)
+# very important scatter plot function for all combinations of plots
+pairs(iris[1:4], main = "Edgar Anderson's Iris Data", pch = 21, bg = c("red", "green3", "blue")[unclass(iris$Species)])
+
+
+
+
+
+
+
+install.packages("ggplot2")
+??ggplot
+
+iris.data = read.csv(url("http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"), header = FALSE,  col.names = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species"))
+head(iris.data)
+
+
+#to eliminate all NA and other values at once VVI
+
+#set.seed(1)
+#dat <- data.frame(one = rnorm(15),
+ #                 two = sample(LETTERS, 15),
+  #                three = rnorm(15),
+   #               four = runif(15))
+#dat <- data.frame(lapply(dat, function(x) { x[sample(15, 5)] <- NA; x }))
+#dat
+
+
+replace_avg <- function(x)
+{ 
+  if(is.numeric(x) )
+  {
+    me <- mean(na.omit(x))
+    x[is.na(x)] <- me
+  }
+  x
+}
+
+
+dat1 <- data.frame(lapply(pk.data , replace_avg))
+
+str(pk.data)
+
+# another way of replacing NA, it is valied for only numerical class
+
+pk.data$Sepal.Length[is.na(pk.data$Sepal.Length)] <- mean(pk.data$Sepal.Length,trim=0, na.rm=TRUE)
+
+
+
+
+######practice 06/03/2015############
+
+
+getwd()
+setwd("D:/RProjects/titanic")
+# in Detwd command putting "" is very important
+
+train.data<-read.csv("train.csv",na.strings=c("NA",""))
+train.data
+
+str(train.data)
+# tockeck th frequency of two variables we created a new variable and check the same.
+table.titanicsur = table(train.data$Survived)
+table.titanicpc = table(train.data$Pclass)
+
+# we understood that these are class variable and hence need to assign them as char or dummy else it might be used for statistical computation
+# we do this by assigning the same variavle as a factor of the same variable. here factor represents the class type
+
+train.data$Survived = factor(train.data$Survived)
+train.data$Pclass = factor(train.data$Pclass)
+
+# to chek the type change is implemented or not
+str(train.data)
+
+# below function help to understand which all values are ==na
+
+is.na(train.data$Age)
+# to find how many missing values in variables which is numerical in type
+
+sum(is.na(train.data$Age) == TRUE)
+# to get how many missing valiues for all variables
+
+
+??sapply
+test<-train.data
+
+sapply(test, function(df)
+{
+               sum(is.na(df)==TRUE)
+    sum(df)  }     ) 
+
+
+
+# above code is not working need to get details why????
+# another way to have a visual display of the same is shown below.
+
+
+install.packages("Amelia")
+require(Amelia)
+
+missmap(train.data, main="Missing Map")
+
+# below this program gives a user interface to check and visualize the data.
+
+AmeliaView()
+
+
+
+
+
+#####%%%%%%%%%%%%%%%%%%%%%%TREATING MISSING VALUES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####
+
+
+
+
+# to check frequency first below is a good way to do.
+
+table(train.data$Embarked, useNA = "always")
+
+
+#Assigning the most any value selected by the user to the missing once. here we assigned 'S'
+
+train.data$Embarked[which(is.na(train.data$Embarked))] = 'S';
+
+table(train.data$Embarked, useNA = "always")
+
+

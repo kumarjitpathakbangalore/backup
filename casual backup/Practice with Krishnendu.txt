@@ -1,0 +1,418 @@
+setInternet2()
+install.packages("ggmap")
+install.packages("maptools")
+install.packages("maps")
+
+library("ggmap")
+library(maptools)
+library(maps)
+
+#visited <- c("Alabama","Astoria",           "Athens","Atlanta"                ,"Auburn","Austin","Birmingham","Boise","Boston","Brookline","New York"      ,"Chicago",          "Chico",                "Cincinnati",       "Cleveland",       "Colorado",        "Colorado Springs",         "Columbia",        "Corpus Christi",                "Denver",            "Dillsburg",         "Front Royal",    "Gainesville",     "Gatineau",        "Glenville",         "Greenville",                "Honolulu",        "Hood River",    "Houston",         "Knoxville",        "Little Rock",      "Maine",                "Massachusetts",            "Minnesota",     "Nevada",           "New Hampshire",          "New Jersey",   "New Mexico",              "New York","Nevada",  "San Francisco",               "Ohio", "Pacific NW",     "Perryville",                "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Princeton",       "Rochester",      "Rockford",                "Rockland",        "Sacramento",  "Saguenay",       "San Diego",       "San Francisco",                "San Jose",                "Santa Monica",               "Savannah",       "Seattle","California",    "Southington","Suburbia", "Texas",                "California",        "Texas",               "Towson",           "Vincennes",     "Virginia",            "Washington"    ,"Williston"                ,"Windsor",        "Woodbury")
+
+#visited <- c("Alabama","Astoria",              "Athens","Atlanta","Auburn","Austin","Boise","Boston","Brookline","New York"     ,"Chicago",          "Chico",                "Cincinnati",       "Cleveland",       "Colorado",        "Colorado Springs",                "Columbia",        "Corpus Christi",               "Denver",            "Dillsburg",         "Front Royal",    "Gainesville",                "Gatineau",        "Glenville",         "Greenville",      "Honolulu",        "Hood River",    "Houston",         "Knoxville",                "Little Rock",      "Maine",              "Massachusetts",            "Minnesota",     "Nevada",           "New Hampshire",                "New Jersey",   "New Mexico", "New York","Nevada",  "San Francisco",               "Ohio", "Pacific NW",                "Perryville",        "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Princeton",       "Rochester",                "Rockford",        "Rockland",        "Sacramento",  "Saguenay",       "San Diego",       "San Francisco",                "San Jose",    "Santa Monica",               "Savannah",       "Seattle","California",    "Southington","Suburbia", "Texas",                "California",        "Texas",               "Towson",           "Vincennes",     "Virginia",            "Washington"    ,"Williston"                ,"Windsor",        "Woodbury")
+
+
+#visited <- c("Rockland",              "Orange",            "Knoxville",        "Perryville",        "Central",            "Perryville",                "Central",            "Hood River",    "Hood River",    "Houston",         "Vincennes",     "Maine",              "Maine",                "Suburbia",         "Athens",            "Chicagoland",  "Southington",  "Chicagoland",  "AlbaNew York",                "Colorado",        "New York",       "New York",       "San Francisco",                "Suburbia",         "California",                "Gatineau",        "Minnesota",     "San Francisco",                "Woodbury",     "New York",       "New York",                "Saguenay",                       "Princeton",       "Woodbury",     "San Francisco",                "Astoria",            "New Jersey",                "Dillsburg",         "Cleveland",       "Virginia",            "Virginia",            "New Mexico", "scramento",                "Portland",         "Portland",         "Corpus Christi",               "Knoxville",        "Corpus Christi",               "Williston",                "scramento",     "San Jose",         "San Jose",         "Corpus Christi ",              "Knoxville",        "Williston",                "scramento",     "San Jose",         "San Jose",         "Corpus Christi",               "Knoxville",        "Corpus Christi",                "Williston",         "scramento",     "San Jose",         "Philadelphia",  "Ohio", "New Hampshire",                "Washington",  "Washington",  "Washington",  "Rockford",        "Birmingham",  "Massachusetts",                "scramento",     "Auburn",           "Ohio", "Auburn",           "Massachusetts",            "New York",       "Texas",                "Savannah",                       "Savannah",       "Austin",              "Williston",         "Colorado Springs",         "Denver",                "San Francisco",                "Portland",         "Greenville",      "San Jose",         "Santa Monica",               "scramento",                "Santa Monica",               "scramento",     "Little Rock",      "Brookline",       "Denver",            "Cincinnati",       "New York",    "New York",       "Portland",         "Greenville",      "San Jose",         "Santa Monica",               "scramento",                "Santa Monica",               "scramento",     "Little Rock",      "Atlanta",            "New York",       "Knoxville",                "Atlanta",            "scramento",     "California",        "Boston",            "Suburbia",         "Boston",            "Boston",                "San Francisco",                "Portland",         "Chicago",           "Rochester",      "Rochester",      "San Francisco",                "Colorado",        "Philadelphia",  "Columbia",        "Jersey Shore", "Pleasantville", "New York",       "Cincinnati",                "Gainesville",     "Cincinnati",       "Gainesville",     "scramento",     "Cincinnati",       "Knoxville",        "Pittsburgh",                "Knoxville",        "New Jersey",   "Chico",                "New Jersey",   "Knoxville",        "Washington",  "Rockford",                "Rockford",        "Birmingham",  "Atlanta",            "Atlanta",            "Honolulu",        "Atlanta",            "California",                "Windsor",          "Seattle",            "New Jersey",   "Towson",           "Towson",           "Nevada",           "Towson",                "Nevada",           "Seattle",            "Texas",               "Nevada",           "Nevada",           "Birmingham",  "Glenville",                "scramento",     "Seattle",            "scramento",     "Chicago",           "Sacramento",  "Boise",                "San Diego",                "Boise",                "San Diego",       "Knoxville",        "Canada",            "Knoxville")
+
+visited <- c("Albany",  "Austin", "Baraboo",          "sanfrancisco",  "Birmingham",  "Boston",            "Bowmanville",                "Buckeye",         "Buckeye ",        "California",        "Canton",            "Charlotte",        "Chester",           "Chicago",                "Chico",                "Cincinnati",       "Colorado",        "Columbia",        "Dover",              "Nova Scotia",                "Farmington",   "Florida",             "Gainesville",     "Oregon",           "Gunnison",       "New Jersey",   "Keystone State",  "Knoxville",        "Livermore",      "Los angeles",   "Mahwah",         "Maine",              "Michigan",        "Milford",                "Morgan",           "Nazareth",        "Nevada",           "New Hampshire",          "New Mexico", "New York",                "Carolina",          "Ohio", "Omaha",            "Ontario",           "Washington",  "Pasadena",       "Pennslyvania",                "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Rhinebeck",     "Rockford",                "sacramento",   "Salem",              "San Diego",       "Santa Barbara",               "Savannah",       "Seattle",                "Somerset",       "Southington",  "St. Louis",          "Tacoma",           "Texas",                              "Utah",                "Vincennes",     "Virginia",            "Wisconsin")
+
+setInternet2()
+ll.visited <- geocode(visited)
+
+visit.x <- ll.visited$lon
+visit.y <- ll.visited$lat
+mp <- NULL
+mapUS <- get_map(location = 'United States', zoom = 3)
+#mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
+#mapNeg <- ggmap(mapUS)
+#mp <- ggplot() +   mapNeg
+
+#Now Layer the cities on top
+#mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="red",main="Location of Negative Sentiments", size=3) 
+mp <- ggmap(mapUS) +   geom_point(aes(x = visit.x, y = visit.y),color="red",main="Location of Negative Sentiments")
+
+mp
+
+setInternet2()
+install.packages('arules')
+
+RStudio.version()
+
+setwd("C:/Users/inkpathak/Desktop/Test data")
+
+
+
+
+
+library("data.table")
+install.packages("data.table")
+
+
+
+#REGRESSION.....
+
+dat<- read.csv("dat_reg.csv", header=TRUE)
+str(dat)
+table(dat$Origin)
+table(dat$Motorway)
+table(dat$DayOfWeek)
+
+
+dat$weekday[dat$Flag=="1"] <-'Weekday'
+dat$weekday[dat$Flag=="2"] <-'Weekday'
+dat$weekday[dat$Flag=="3"] <-'Weekday'
+dat$weekday[dat$Flag=="4"] <-'Weekday'
+dat$weekday[dat$Flag=="5"] <-'Weekday'
+dat$weekday[dat$Flag=="6"] <-'Weekend'
+dat$weekday[dat$Flag=="7"] <-'Weekend'
+
+Avgdelay<-aggregate(dat,FUN=mean,by)
+
+
+library(plyr)
+install.packages("plyr")
+
+# to get mean by class of a variable....
+
+ddply(dat, .(weekday), colwise(mean, .(Delay_Actual)))
+
+
+
+#Initial Regression Model
+
+reg1<-lm(Delay_Actual~.,data=dat[,-c(4,7,9)])
+
+# in the above code we have put ~. just to state all other variable are independent and then with C[,-c(7:8)]
+
+
+
+summary(reg1)
+
+reg1$coef
+AIC(reg1)
+BIC(reg1)
+# this gives the AIC BIC of the first model
+
+
+#next nodel for interraction effect of Vehicle speed and other variable...
+
+reg2<- lm(Delay_Actual~Flag+EngineStar_time+Vehicle_Speed+Motorway+Origin+Vehicle_Speed*EngineStar_time, data=dat)
+summary(reg2)
+AIC(reg2)
+BIC(reg2)
+
+
+# including polynomial term on the regression to increase R2
+
+reg3<- lm(Delay_Actual~Flag+EngineStar_time+Vehicle_Speed+Motorway+Origin+Vehicle_Speed*EngineStar_time+I(Vehicle_Speed^2), data=dat)
+
+
+summary(reg3)
+AIC(reg3)
+BIC(reg3)
+
+library("car")
+install.packages("car")
+vif(reg1)
+
+
+
+
+
+
+
+
+
+
+
+
+#RANDOM FOREST
+
+RFdata<- read.csv("LongUser_Trip_Information.csv", header=TRUE)
+
+
+#changing engine start time anmd stop time in minutes 
+  RFdata$EngineStartTime <- as.POSIXct(RFdata$EngineStartTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStartTime);
+RFdata$EngineStartTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+RFdata$EngineStopTime <- as.POSIXct(RFdata$EngineStopTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStopTime);
+RFdata$EngineStopTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+# only for curent format--- below
+
+RFdata$EngineStartTime <- as.POSIXct(RFdata$EngineStartTime, format = "%H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStartTime);
+RFdata$EngineStartTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+RFdata$EngineStopTime <- as.POSIXct(RFdata$EngineStopTime, format = "%Y-%m-%d %H:%M:%S");
+time.poslt <- as.POSIXlt(RFdata$EngineStopTime);
+RFdata$EngineStopTime <- time.poslt$hour + time.poslt$min/60 + time.poslt$sec/3600;
+
+# dummy variable to detect massage activeted or not with condition
+RFdata$Act<-ifelse(RFdata$ActivationCount>0,1,0)
+
+
+install.packages("randomForest")
+library("randomForest")
+install.packages("ROCR")
+library("ROCR")
+
+set.seed(1000)
+
+#selecting the variable for RFM
+
+  dat1<-RFdata[,c("DayOfWeek","Destination","LogStartSecsSinceMorning","Motorway",
+               "Origin","TripDuration","Act")]
+
+#  set.seed(1000)
+
+# dividing the training and testing set
+  set.seed(10)
+sub <- sample(nrow(dat1), floor(nrow(dat1) * 0.8))
+training <- dat1[sub, ]
+testing <- dat1[-sub, ]
+
+
+
+??tuneRF
+bestmtry <- tuneRF(training[,-7],training[,7], ntreeTry=100, 
+                   stepFactor=1.5,improve=0.1, trace=TRUE, plot=TRUE, dobest=FALSE)
+??randomForest
+
+adult.rf <-randomForest(factor(Act)~.,data=training, mtry=2, ntree=1000, 
+                        keep.forest=TRUE, importance=TRUE)
+
+#variable Importance
+
+rk<-round(importance(adult.rf), 2)
+
+importance(adult.rf)
+varImpPlot(adult.rf)
+
+??prediction
+
+#another way robust ... for validation
+Description
+This function shows the cross-validated prediction performance of models with sequentially reduced
+number of predictors (ranked by variable importance) via a nested cross-validation procedure.
+#SYNTAX
+
+rk<-rfcv(training[,1:6], training[,7], cv.fold=5, scale="log", step=0.5,
+         mtry=function(p) max(1, floor(sqrt(p))), recursive=FALSE)
+# explanation
+#trainx -----matrix or data frame containing columns of predictor variables
+#trainy ------vector of response, must have length equal to the number of rows in trainx
+#cv.fold ------number of folds in the cross-validation
+#scale --------if "log", reduce a fixed proportion (step) of variables at each step, otherwise
+#reduce step variables at a time
+#step------ if log=TRUE, the fraction of variables to remove at each step, else remove this
+#many variables at a time how many % of variablr you want in the mejor importance criteria
+#mtry --------a function of number of remaining predictor variables to use as the mtry parameter
+#in the randomForest call
+#recursive------ whether variable importance is (re-)assessed at each step of variable reduction
+#... other arguments passed on to randomForest
+
+# Below two commands fives specificaly wahat are the significant variables.
+
+
+
+print(rk$n.var)
+print(rk$error.cv)
+
+
+# predict the output 
+
+predict(adult.rf,testing,type="response")
+
+
+# no other package worked for ROC and confusion.... Hence tried with e1071 and caret
+
+install.packages("e1071")
+install.packages("caret")
+ 
+
+setInternet2()
+  library(e1071)
+library("caret")
+testing$act<-factor(testing$Act)
+testing<-testing[,-7]
+testp4<-as.data.frame(predict(adult.rf,testing,type='response'))
+names(testp4)<-"predicted"
+actual<-as.data.frame(testing$act)
+names(actual)<-"Actual"
+ac_pred<-cbind(actual,testp4)
+tab<-table(ac_pred$Actual,ac_pred$predicted)
+confusionMatrix(tab)
+
+
+
+
+
+
+
+#need to test the beloiw.....
+
+adult.rf.pr = predict(adult.rf,type="prob",newdata=testing)[,2]
+adult.rf.pred = prediction(adult.rf.pr,type="prob" testing)
+adult.rf.perf = performance(adult.rf.pred,"tpr","fpr")
+plot(adult.rf.perf,main="ROC Curve for Random Forest",col=2,lwd=2)
+abline(a=0,b=1,lwd=2,lty=2,col="gray")
+
+adult.rf.pr
+??tuneRF
+
+
+
+______________________________________________________________________________________
+
+
+
+
+
+
+##############################Logistic Regression
+
+install.packages("riv")
+library("riv")
+
+logist<-RFdata[,c("LogStartSecsSinceMorning","Motorway","TripDuration","Act")]
+
+#  set.seed(1000)
+
+# dividing the training and testing set
+set.seed(100)
+sub <- sample(nrow(dat1), floor(nrow(dat1) * 0.8))
+training <- logist[sub, ]
+testing <- logist[-sub, ]
+
+
+str(training)
+
+#changing categorical response veriable in to factor class
+training$Act <- factor(training$Act)
+
+
+#coarse bining
+training$Tripinfo<-as.factor(ifelse(training$TripDuration<=1000,'Smalltrip',
+                                ifelse(training$TripDuration<=4000,'Midtrip','Longtrip')))
+
+
+
+
+#Logistic Model
+
+mylogit <- glm(Act ~ TripDuration + Motorway + LogStartSecsSinceMorning, data = training , family = "binomial")
+
+summary(mylogit)
+
+# another way
+
+lg<-glm(Act~.,data=training[,-c(3)],family="binomial")
+testing$score<-predict(lg,type="response",testing)
+pred<-prediction(testing$score,testing$Act)
+perf<-performance(pred,"tpr","fpr")
+plot(perf)
+
+#  AIC BIC
+
+AIC(lg)
+BIC(lg)
+
+#Multi-collinearity(now we have 5 variables)
+
+
+library(car)
+install.packages(MASS)
+help(glm)
+
+summary(lg)
+vif(lg)
+
+vif(lg)
+
+# Confusion Matrix
+
+
+setInternet2()
+library(e1071)
+library("caret")
+testing$act<-factor(testing$Act)
+testing<-testing[,-7]
+testp4<-as.data.frame(predict(lg,testing,type='response'))
+testp5<- as.data.frame(ifelse(testp4$predicted > 0.589742,1,0))
+
+names(testp5)<-"predicted"
+actual<-as.data.frame(testing$act)
+names(actual)<-"Actual"
+ac_pred<-cbind(actual,testp5)
+
+
+tab<-table(ac_pred$Actual,ac_pred$predicted)
+
+str(tab)
+confusionMatrix(tab)
+tab
+actual
+
+testp4
+testp5
+
+
+________________________________________________________________________________
+
+max(attr(perf,'y.values')[[1]]-attr(perf,'x.values')[[1]])
+
+install.packages("woe")
+
+
+
+
+
+library(devtools)
+devtools::install_github("/tomasgreif/woe")
+library(riv)
+
+k = iv.mult(training,"gb",TRUE)
+k= iv.num(.....)
+
+
+
+# Information value
+
+iv<-function(predit,target) # my somer's D function
+{
+  data<-data.frame(predit,target);
+  data_sort<-data[order(predit),]
+  
+  ttl_num<-length(target);
+  bin<-10;
+  n<-ttl_num%/%bin;
+  iv_bin<-rep(0,times=bin);
+  good<-rep(0,times=bin);
+  bad<-rep(0,times=bin);
+  for (i in 1:bin) # calculate PSI for ith bin
+  {
+    if(i!=bin) {good[i]<-sum(data_sort$target[((i-1)*n+1):(n*i)]);bad[i]<-n-good[i]} else
+    {good[i]<-sum(data_sort$target[((i-1)*n+1):ttl_num]);bad[i]<-ttl_num-n*(i-1)-good[i]}
+  }
+  
+  good_pct<-good/sum(good)
+  bad_pct<-bad/sum(bad)
+  for (i in 1:bin)
+  {
+    iv_bin[i]<-(bad_pct[i]-good_pct[i])*log(bad_pct[i]/good_pct[i])
+  }
+  
+  iv=sum(iv_bin)
+  return (iv)
+}
+
+iv(predit,target)
+
+
+
+
+
+

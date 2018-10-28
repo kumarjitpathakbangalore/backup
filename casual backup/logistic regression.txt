@@ -1,0 +1,26 @@
+##############################Logistic Regression
+
+install.packages("riv")
+
+
+logist<-RFdata[,c("LogStartSecsSinceMorning","Motorway","TripDuration","Act")]
+
+#  set.seed(1000)
+
+# dividing the training and testing set
+set.seed(100)
+sub <- sample(nrow(dat1), floor(nrow(dat1) * 0.8))
+training <- logist[sub, ]
+testing <- logist[-sub, ]
+
+
+str(logist)
+
+#changing categorical response veriable in to factor class
+logist$Act <- factor(logist$Act)
+
+#Logistic Model
+
+mylogit <- glm(Act ~ TripDuration + Motorway + LogStartSecsSinceMorning, data = training , family = "binomial")
+
+summary(mylogit)

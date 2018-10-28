@@ -1,0 +1,453 @@
+require(httr)
+require(XML)
+
+getwd()
+setwd("D:/RProjects/Wordcloud/Harman")
+
+# change the URL here this script only works for www.subaruoutback.org
+# changed the file name by the main link to be able to recognize it
+
+dat <- readLines("http://www.subaruoutback.org/forums/69-audio-video-security-navigation/17351-replace-hk-amp.html", warn=FALSE)
+
+#index<-"http://www.subaruoutback.org/forums/69-audio-video-security-navigation/147249-2014-nav-favorites.html"
+
+# data.frame(c())
+#write.table(index, file = "D:/RProjects/Wordcloud/Harman/web_index.txt",append=T,row.names=FALSE)
+#txt <- c("Hallo", "World")
+#writeLines(txt, "outfile.txt") or below
+#txt <- "Hallo\nWorld"
+#writeLines(txt, "outfile.txt")  or below
+#sink("outfile.txt")
+# cat("hello")
+# cat("\n")
+# cat("world")
+# sink()> file.show("outfile.txt")
+#hello
+#world
+
+#using (System.IO.StreamReader Reader = new System.IO.StreamReader("C://myfile2.txt"))
+ #{
+ # StringBuilder Sb = new StringBuilder();
+#  string fileContent = Reader.ReadToEnd();
+ # if (fileContent.Contains("your search text"))
+#    return true;
+ # else
+ #   return false;
+#}
+
+
+# we need to check and create a program to put the URL in a text file and also a condition which will check the same if it is already available it will not execute further and stop 
+raw2 <- htmlTreeParse(dat, useInternalNodes = TRUE)
+data <- xpathApply(raw2,"//div[starts-with(@id, 'post_message')]",xmlValue)
+
+data <- unlist(data)
+
+data
+
+data.audio <- data[grep("audio|stereo",data)]
+write.table(data.audio, file = "D:/RProjects/Wordcloud/Harman/Audio_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.bluetooth <- data[grep("bluetooth", data)]
+data.bluetooth
+
+#data.bad.bt <- data.bluetooth[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.bluetooth)]
+#data.bad.bt
+#data.bt <-  data.frame(data.bad.bt,stringsAsFactors = F)
+
+write.table(data.bluetooth, file = "D:/RProjects/Wordcloud/Harman/BT_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.navigation <- data[grep("navigation|nav",data)]
+data.navigation
+#data.bad.nav <- data.navigation[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.navigation)]
+#data.bad.nav
+write.table(data.navigation,file="D:/RProjects/Wordcloud/Harman/NAV_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+data.voice<- data[grep("voice|voice recognition|recognition|radio",data)]
+data.voice
+
+#data.bad.voice <- data.voice[grep("awful|bad|worthless|junk|problems|doesn't work|hate|disappointing|upset|useless|crap|not working|horrendous|crazy|sucks|headache",data.voice)]
+#data.bad.voice
+write.table(data.voice,file="D:/RProjects/Wordcloud/Harman/VC_Subu_subaruoutback.txt",append=T,row.names=FALSE)
+
+
+
+
+#*******************************************************************************************************
+
+
+
+# toread the text file first
+
+lines<- readLines("D:/RProjects/Wordcloud/Harman/data.txt",  warn = TRUE,
+                   skipNul = FALSE)
+
+
+# To grep lines seperately into a file
+KP<-lines[grep("[A-Z][a-z]",lines)]
+head(KP)
+write.table(KP, file = "D:/RProjects/Wordcloud/Harman/test.txt",append=T,row.names=FALSE)
+
+# to remove specific words from the txt file
+docs <- tm_map(KP, removeWords, c ("department" , "email"))
+
+
+****************************************************Scoring Sentiment****************************************************
+
+  
+  
+  
+score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
+{
+  require(plyr)
+  require(stringr)
+  
+  # we got a vector of sentences. plyr will handle a list
+  # or a vector as an "l" for us
+  # we want a simple array ("a") of scores back, so we use 
+  # "l" + "a" + "ply" = "laply":
+  scores = laply(sentences, function(sentence, pos.words, neg.words) {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    # and convert to lower case:
+    sentence = tolower(sentence)
+    
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+    pos.matches = match(words, pos.words)
+    neg.matches = match(words, neg.words)
+    
+    # match() returns the position of the matched term or NA
+    # we just want a TRUE/FALSE:
+    pos.matches = !is.na(pos.matches)
+    neg.matches = !is.na(neg.matches)
+    
+    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    score = sum(pos.matches) - sum(neg.matches)
+    
+    return(score)
+  }, pos.words, neg.words, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+
+
+
+
+
+****************************************************preparing world cloud********************************
+
+install.packages(wordcloud)
+install.packages(RColorBrewer)
+install.packages(tm)
+library(wordcloud)
+Loading required package: RColorBrewer
+library(RColorBrewer)
+mydata = read.table("data.txt")
+
+Error in file(file, "rt") : cannot open the connection
+
+mydata = read.table("D:/RProjects/Wordcloud/harman/data.txt")
+library(tm)
+
+Loading required package: NLP
+
+sms_corpus <- Corpus(VectorSource(mydata))
+corpus_clean <- tm_map(sms_corpus, tolower)
+corpus_clean <- tm_map(corpus_clean, removeNumbers)
+corpus_clean <- tm_map(corpus_clean, removeWords, stopwords()) # this will clean the bad words like suck etc
+corpus_clean <- tm_map(corpus_clean, removePunctuation)
+corpus_clean <- tm_map(corpus_clean, stripWhitespace)# this will remove white space
+sms_dtm <- DocumentTermMatrix(corpus_clean) # this will create a matrix with frequency of each words
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+sms_dtm <- TermDocumentMatrix(corpus_clean)
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+corpus_clean <- tm_map(corpus_clean, PlainTextDocument)
+sms_dtm <- DocumentTermMatrix(corpus_clean)
+sms_dtm = as.matrix(sms_dtm)
+pal <- brewer.pal(9, "Dark2")
+pal <- pal[-(1:2)]
+
+
+wordcloud(corpus_train, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+Error in wordcloud(corpus_train, min.freq = 2, max.words = 30, random.order = T,  : 
+                     object 'corpus_train' not found
+                  wordcloud(corpus_clean, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                  wordcloud(corpus_clean, min.freq=2,random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                   
+                   
+************************************************************************************************************
+ #     VVI 
+  setInternet2()
+# this program will overpower the proxysetting and firewall and have direct internet access
+
+
+#rattle is a menue driven version of R which allows to see quick overview of the data and does many analysis
+install.packages("rattle")
+library("rattle")
+rattle()
+Yes
+
+***********************************TEXT ANALYTICS PRACTICE *******************************************************************************
+
+library(tm) # Framework for text mining.
+library(SnowballC) # Provides wordStem() for stemming.
+library(qdap) # Quantitative discourse analysis of transcripts.
+library(qdapDictionaries)
+library(dplyr) # Data preparation and pipes %>%.
+library(RColorBrewer) # Generate palette of colours for plots.
+library(ggplot2) # Plot word frequencies.
+library(scales) # Include commas in numbers.
+
+# the above mentioned packages are required for Text Analytics.
+
+getSources() # to understand the sourse from which program can fetch the data.
+
+
+getReaders() # To know what all formats supported by TM package
+
+
+#We load a sample corpus of text documents. Our corpus consists of a collection of research
+# papers all stored in the folder we identify below. This will specify a path where all the documents are located
+
+
+cname <- file.path("C:/Users/inkpathak/Desktop/Learning/Text Analytics/corpus")
+cname
+#output [1] "C:/Users/inkpathak/Desktop/Learning/Text Analytics/corpus"
+
+length(dir(cname))
+# will show how many files are there [1] 3
+dir(cname)
+
+#Itwill show all the files in the location [1] "BT_Subu_subaruoutback.txt" "NAV_Subukp.txt"            "VC_Subukp.txt" 
+
+# below file will show how to use all files togeather using DirSource()
+docs <- Corpus(DirSource(cname))
+# outout <<VCorpus (documents: 3, metadata (corpus/indexed): 0/0)>>
+docs
+
+class(docs)
+
+#[1] "VCorpus" "Corpus"
+
+# after converting thelist of documents into a single data reference names as docs we can chek the property of the same.
+
+class(docs[[1]])
+
+#[1] "PlainTextDocument" "TextDocument" 
+
+summary(docs)
+# summary will give details of each files present on the place or location mentioned
+
+# To read pdf document in corpus and doc files command
+
+docs <- Corpus(DirSource(cname), readerControl=list(reader=readPDF))
+docs <- Corpus(DirSource(cname), readerControl=list(reader=readDOC))
+docs <- Corpus(DirSource(cname), readerControl=list(reader=readDOC("-r -s")))
+
+
+# Here, -r requests that removed text be included in the output, and -s requests that text hidden by Word be included.
+
+#***************************Exploring the Corpus******************************
+
+inspect(docs[1])
+
+#We generally need to perform some pre-processing of the text data to prepare for the text analysis. Example transformations include converting the text to lower case, removing numbers and
+#punctuation, removing stop words, stemming and identifying synonyms. The basic transforms
+#are all available within tm.
+getTransformations()
+
+#*************************Simple Transforms************************
+
+#We start with some manual special transforms we may want to do. For example, we might want
+#to replace \/", used sometimes to separate alternative words, with a space. This will avoid the
+#two words being run into one string of characters through the transformations. We might also
+#replace \@" and \|" with a space, for the same reason.
+#To create a custom transformation we make use of content transformer() crate a function to
+#achieve the transformation, and then apply it to the corpus using tm map().
+
+
+toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "nn|")
+
+
+
+# The above mentioned can be done with a single call:
+
+docs <- tm_map(docs, toSpace, "/|@|nn|")
+
+inspect(docs[1])
+
+#*************************************Conversion to Lower Case
+docs <- tm_map(docs, content_transformer(tolower))
+
+#    Remove Numbers
+docs <- tm_map(docs, removeNumbers)
+#Remove Punctuation
+docs <- tm_map(docs, removePunctuation)
+#Remove English Stop Words
+docs <- tm_map(docs, removeWords, stopwords("english"))
+# to know about different stop words used we can do following
+
+length(stopwords("english"))
+stopwords("english")
+
+#*********************************Remove Own Stop Words............ specified by user
+
+docs <- tm_map(docs, removeWords, c("department", "email"))
+docs <- tm_map(docs, removeWords, c( "the"))
+docs
+
+
+######## thei is related to the project we are doing........
+
+
+D:\RProjects\Wordcloud\corpus
+
+cname <- file.path("D:/RProjects/Wordcloud/corpus")
+
+#Strip Whitespace
+docs <- tm_map(docs, stripWhitespace)
+
+#......................................Specific Transformations......................
+#We might also have some specific transformations we would like to perform. The examples here
+#may or may not be useful, depending on how we want to analyse the documents. This is really
+#for illustration using the part of the document we are looking at here, rather than suggesting
+#this specific transform adds value.
+
+
+
+toString <- content_transformer(function(x, from, to) gsub(from, to, x))
+docs <- tm_map(docs, toString, "harbin institute technology", "HIT")
+docs <- tm_map(docs, toString, "shenzhen institutes advanced technology", "SIAT")
+docs <- tm_map(docs, toString, "chinese academy sciences", "CAS")
+
+
+library(SnowballC)
+docs <- tm_map(docs, stemDocument)
+
+#....................................Creating a Document Term Matrix.......................
+
+dtm <- DocumentTermMatrix(docs)
+dtm
+
+
+
+
+docs <- tm_map(docs, PlainTextDocument)
+
+pal <- brewer.pal(9, "Dark2")
+pal <- pal[-(1:2)]
+wordcloud(docs, min.freq=2,random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+
+
+#.............................WORLD CLOUD for the specific project
+install.packages(wordcloud)
+install.packages(RColorBrewer)
+install.packages(tm)
+library(wordcloud)
+setwd("D:/RProjects/Wordcloud/corpus")
+
+Loading required package: RColorBrewer
+library(RColorBrewer)
+mydata = read.table("BT_outback_problems.txt")
+
+Error in file(file, "rt") : cannot open the connection
+
+mydata = read.table("D:/RProjects/Wordcloud/harman/data.txt")
+library(tm)
+
+Loading required package: NLP
+
+sms_corpus <- Corpus(VectorSource(docs))
+corpus_clean <- tm_map(sms_corpus, tolower)
+corpus_clean <- tm_map(corpus_clean, removeNumbers)
+corpus_clean <- tm_map(corpus_clean, removeWords, stopwords()) # this will clean the bad words like suck etc
+corpus_clean <- tm_map(corpus_clean, removePunctuation)
+corpus_clean <- tm_map(corpus_clean, stripWhitespace)# this will remove white space
+sms_dtm <- DocumentTermMatrix(corpus_clean) # this will create a matrix with frequency of each words
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+sms_dtm <- TermDocumentMatrix(corpus_clean)
+
+Error: inherits(doc, "TextDocument") is not TRUE
+
+# without the below comment or converting in plain text document  wordcloud will not form
+corpus_clean <- tm_map(corpus_clean, PlainTextDocument)
+
+
+sms_dtm <- DocumentTermMatrix(corpus_clean)
+sms_dtm = as.matrix(sms_dtm)
+
+# below command is very important to use the pal in cloud
+pal <- brewer.pal(9, "Dark2")
+pal <- pal[-(1:2)]
+
+
+wordcloud(corpus_train, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+Error in wordcloud(corpus_train, min.freq = 2, max.words = 30, random.order = T,  : 
+                     object 'corpus_train' not found
+ wordcloud(corpus_clean, min.freq=2,max.words=30, random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                   
+                   
+wordcloud(corpus_clean, min.freq=2,random.order=T, rot.per=.15, colors=pal, vfont=c("sans serif","plain"))
+                   
+                   
+#-------------------------------------- World MAP-------- with negetive source---------------------
+
+
+# this program runs only in R and not R studio as the internet connection gets blocked.
+
+
+setInternet2()
+install.packages("ggmap")
+install.packages("maptools")
+install.packages("maps")
+
+library("ggmap")
+library(maptools)
+library(maps)
+
+#visited <- c("Alabama","Astoria",           "Athens","Atlanta"                ,"Auburn","Austin","Birmingham","Boise","Boston","Brookline","New York"      ,"Chicago",          "Chico",                "Cincinnati",       "Cleveland",       "Colorado",        "Colorado Springs",         "Columbia",        "Corpus Christi",                "Denver",            "Dillsburg",         "Front Royal",    "Gainesville",     "Gatineau",        "Glenville",         "Greenville",                "Honolulu",        "Hood River",    "Houston",         "Knoxville",        "Little Rock",      "Maine",                "Massachusetts",            "Minnesota",     "Nevada",           "New Hampshire",          "New Jersey",   "New Mexico",              "New York","Nevada",  "San Francisco",               "Ohio", "Pacific NW",     "Perryville",                "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Princeton",       "Rochester",      "Rockford",                "Rockland",        "Sacramento",  "Saguenay",       "San Diego",       "San Francisco",                "San Jose",                "Santa Monica",               "Savannah",       "Seattle","California",    "Southington","Suburbia", "Texas",                "California",        "Texas",               "Towson",           "Vincennes",     "Virginia",            "Washington"    ,"Williston"                ,"Windsor",        "Woodbury")
+
+#visited <- c("Alabama","Astoria",              "Athens","Atlanta","Auburn","Austin","Boise","Boston","Brookline","New York"     ,"Chicago",          "Chico",                "Cincinnati",       "Cleveland",       "Colorado",        "Colorado Springs",                "Columbia",        "Corpus Christi",               "Denver",            "Dillsburg",         "Front Royal",    "Gainesville",                "Gatineau",        "Glenville",         "Greenville",      "Honolulu",        "Hood River",    "Houston",         "Knoxville",                "Little Rock",      "Maine",              "Massachusetts",            "Minnesota",     "Nevada",           "New Hampshire",                "New Jersey",   "New Mexico", "New York","Nevada",  "San Francisco",               "Ohio", "Pacific NW",                "Perryville",        "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Princeton",       "Rochester",                "Rockford",        "Rockland",        "Sacramento",  "Saguenay",       "San Diego",       "San Francisco",                "San Jose",    "Santa Monica",               "Savannah",       "Seattle","California",    "Southington","Suburbia", "Texas",                "California",        "Texas",               "Towson",           "Vincennes",     "Virginia",            "Washington"    ,"Williston"                ,"Windsor",        "Woodbury")
+
+
+#visited <- c("Rockland",              "Orange",            "Knoxville",        "Perryville",        "Central",            "Perryville",                "Central",            "Hood River",    "Hood River",    "Houston",         "Vincennes",     "Maine",              "Maine",                "Suburbia",         "Athens",            "Chicagoland",  "Southington",  "Chicagoland",  "AlbaNew York",                "Colorado",        "New York",       "New York",       "San Francisco",                "Suburbia",         "California",                "Gatineau",        "Minnesota",     "San Francisco",                "Woodbury",     "New York",       "New York",                "Saguenay",                       "Princeton",       "Woodbury",     "San Francisco",                "Astoria",            "New Jersey",                "Dillsburg",         "Cleveland",       "Virginia",            "Virginia",            "New Mexico", "scramento",                "Portland",         "Portland",         "Corpus Christi",               "Knoxville",        "Corpus Christi",               "Williston",                "scramento",     "San Jose",         "San Jose",         "Corpus Christi ",              "Knoxville",        "Williston",                "scramento",     "San Jose",         "San Jose",         "Corpus Christi",               "Knoxville",        "Corpus Christi",                "Williston",         "scramento",     "San Jose",         "Philadelphia",  "Ohio", "New Hampshire",                "Washington",  "Washington",  "Washington",  "Rockford",        "Birmingham",  "Massachusetts",                "scramento",     "Auburn",           "Ohio", "Auburn",           "Massachusetts",            "New York",       "Texas",                "Savannah",                       "Savannah",       "Austin",              "Williston",         "Colorado Springs",         "Denver",                "San Francisco",                "Portland",         "Greenville",      "San Jose",         "Santa Monica",               "scramento",                "Santa Monica",               "scramento",     "Little Rock",      "Brookline",       "Denver",            "Cincinnati",       "New York",    "New York",       "Portland",         "Greenville",      "San Jose",         "Santa Monica",               "scramento",                "Santa Monica",               "scramento",     "Little Rock",      "Atlanta",            "New York",       "Knoxville",                "Atlanta",            "scramento",     "California",        "Boston",            "Suburbia",         "Boston",            "Boston",                "San Francisco",                "Portland",         "Chicago",           "Rochester",      "Rochester",      "San Francisco",                "Colorado",        "Philadelphia",  "Columbia",        "Jersey Shore", "Pleasantville", "New York",       "Cincinnati",                "Gainesville",     "Cincinnati",       "Gainesville",     "scramento",     "Cincinnati",       "Knoxville",        "Pittsburgh",                "Knoxville",        "New Jersey",   "Chico",                "New Jersey",   "Knoxville",        "Washington",  "Rockford",                "Rockford",        "Birmingham",  "Atlanta",            "Atlanta",            "Honolulu",        "Atlanta",            "California",                "Windsor",          "Seattle",            "New Jersey",   "Towson",           "Towson",           "Nevada",           "Towson",                "Nevada",           "Seattle",            "Texas",               "Nevada",           "Nevada",           "Birmingham",  "Glenville",                "scramento",     "Seattle",            "scramento",     "Chicago",           "Sacramento",  "Boise",                "San Diego",                "Boise",                "San Diego",       "Knoxville",        "Canada",            "Knoxville")
+
+visited <- c("Albany",  "Austin", "Baraboo",          "sanfrancisco",  "Birmingham",  "Boston",            "Bowmanville",                "Buckeye",         "Buckeye ",        "California",        "Canton",            "Charlotte",        "Chester",           "Chicago",                "Chico",                "Cincinnati",       "Colorado",        "Columbia",        "Dover",              "Nova Scotia",                "Farmington",   "Florida",             "Gainesville",     "Oregon",           "Gunnison",       "New Jersey",   "Keystone State",  "Knoxville",        "Livermore",      "Los angeles",   "Mahwah",         "Maine",              "Michigan",        "Milford",                "Morgan",           "Nazareth",        "Nevada",           "New Hampshire",          "New Mexico", "New York",                "Carolina",          "Ohio", "Omaha",            "Ontario",           "Washington",  "Pasadena",       "Pennslyvania",                "Philadelphia",  "Pittsburgh",      "Pleasantville", "Portland",         "Rhinebeck",     "Rockford",                "sacramento",   "Salem",              "San Diego",       "Santa Barbara",               "Savannah",       "Seattle",                "Somerset",       "Southington",  "St. Louis",          "Tacoma",           "Texas",                              "Utah",                "Vincennes",     "Virginia",            "Wisconsin")
+
+setInternet2()
+ll.visited <- geocode(visited)
+
+visit.x <- ll.visited$lon
+visit.y <- ll.visited$lat
+mp <- NULL
+mapUS <- get_map(location = 'United States', zoom = 3)
+#mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
+#mapNeg <- ggmap(mapUS)
+#mp <- ggplot() +   mapNeg
+
+#Now Layer the cities on top
+#mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="red",main="Location of Negative Sentiments", size=3) 
+mp <- ggmap(mapUS) +   geom_point(aes(x = visit.x, y = visit.y),color="red",main="Location of Negative Sentiments")
+
+mp
+
+
+
+
