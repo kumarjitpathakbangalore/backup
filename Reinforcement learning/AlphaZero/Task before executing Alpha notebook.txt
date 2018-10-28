@@ -1,0 +1,7 @@
+steps:
+
+1) add __init__.py file in the folder to acces all classe and methods in the py files
+2) add is_shown=1 at line 88 in train.py
+3) change is_shown=1 at line 157 in train.py
+
+now run Alpha Zero Notebook
