@@ -1,0 +1,171 @@
+
+###  SPRK LINK
+spark-shell --queue NONP.HAASAET0209_06429
+Table : ee_usage_daily
+Date :  2017-07-06
+
+###========================  IMPORT REQUIRED PACKAGES
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+import org.apache.spark.sql.hive.HiveContext
+val hc = new org.apache.spark.sql.hive.HiveContext(sc)
+import sqlContext.implicits._
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.clustering.KMeans
+import org.apache.spark.sql.functions._
+import org.apache.spark.mllib.util.MLUtils
+
+###=============================  CREATE RDD FILE 
+// USE  HAASAET0209_06429 INSTANCE
+hc.sql("use HAASAET0209_06429")
+
+//  create sudset data from hive table in spark
+@transient val ee_usage_RDD = hc.sql("select start_cell_name, calls_max,data_volume_up_max, data_volume_down_max, userbase_max from ee_usage_daily where dt='2017-07-06'")
+
+// count no of record in RDD
+ee_usage_RDD.count()
+
+// REMOVE NA VALUE FROM RDD
+@transient val ee_usage_RDD_wna = ee_usage_RDD.na.drop()
+
+// REMOVE BLANK VALUE FROM DATASET
+@transient val ee_usage_RDD_f = ee_usage_RDD_wna.filter("start_cell_name != ''")
+
+// distinct records
+val ee_usage_RDD_df = ee_usage_RDD_f.distinct()
+
+// CONVERT RDD TO DATAFRAME
+@transient val ee_usage_DF = ee_usage_RDD_df.toDF()
+
+###=================================  NORMALIZE THE DATAFRAME
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.functions.{min, max, lit}
+
+### NORMALIZE THE calls_max VARIABLE
+// CALCULATE MINIMUM & MAXIMUM VALUE FOR "calls_max" VARIABLE
+@transient val (calls_maxMin, calls_maxMax) = ee_usage_DF.agg(min($"calls_max"), max($"calls_max")).first match { case Row(x: Float, y: Float) => (x, y)}
+// Range of the scaled variable
+@transient val scaledRange = lit(2) 
+// Min value of the scaled variable
+@transient val scaledMin = lit(-1)  
+// normalized to (0, 1) range
+@transient val calls_maxNormalized = ($"calls_max" - calls_maxMin) / (calls_maxMax - calls_maxMin) 
+@transient val calls_maxScaled = calls_maxNormalized 
+@transient val scaledData2 = ee_usage_DF.withColumn("calls_maxScaled", calls_maxScaled)
+
+
+### NORMALIZE THE data_volume_up_max VARIABLE
+// CALCULATE MINIMUM & MAXIMUM VALUE FOR "data_volume_up_max" VARIABLE
+@transient val (dvuMin, dvuMax) = scaledData2.agg(min($"data_volume_up_max"), max($"data_volume_up_max")).first match { case Row(x: Long, y: Long) => (x, y)}
+// Range of the scaled variable
+@transient val scaledRange = lit(2) 
+// Min value of the scaled variable
+@transient val scaledMin = lit(-1) 
+// normalized to (0, 1) range 
+@transient val dvuNormalized = ($"data_volume_up_max" - dvuMin) / (dvuMax - dvuMin) 
+@transient val dvuScaled = dvuNormalized 
+@transient val scaledData3 = scaledData2.withColumn("data_volume_up_max_Sc", dvuScaled)
+
+
+### NORMALIZE THE data_volume_down_max VARIABLE
+// CALCULATE MINIMUM & MAXIMUM VALUE FOR "data_volume_down_max" VARIABLE
+@transient val (dvdMin, dvdMax) = scaledData3.agg(min($"data_volume_down_max"), max($"data_volume_down_max")).first match { case Row(x: Long, y: Long) => (x, y)}
+// Range of the scaled variable
+@transient val scaledRange = lit(2) 
+// Min value of the scaled variable
+@transient val scaledMin = lit(-1) 
+//  normalized to (0, 1) range 
+@transient val dvdNormalized = ($"data_volume_down_max" - dvdMin) / (dvdMax - dvdMin) 
+@transient val dvdScaled = dvdNormalized 
+@transient val scaledData4 = scaledData3.withColumn("data_volume_down_max_Sc", dvdScaled)
+
+### NORMALIZE THE userbase_max VARIABLE
+// CALCULATE MINIMUM & MAXIMUM VALUE FOR "userbase_max" VARIABLE
+@transient val (ubMin, ubMax) = scaledData4.agg(min($"userbase_max"), max($"userbase_max")).first match { case Row(x: Long, y: Long) => (x, y)}
+
+// Range of the scaled variable
+@transient val scaledRange = lit(2) 
+
+// Min value of the scaled variable
+@transient val scaledMin = lit(-1) 
+
+//  normalized to (0, 1) range 
+@transient val ubNormalized = ($"userbase_max" - ubMin) / (ubMax - ubMin) 
+@transient val ubScaled = ubNormalized 
+@transient val scaledData5 = scaledData4.withColumn("User_base_Sc", ubScaled)
+
+###===================================  convert dataframe  to RDD
+// creade RDD OF DATAFRAME
+@transient val ee_rowsRDD = scaledData5.rdd.map(r => (r.getString(0), r.getFloat(1), r.getLong(2), r.getLong(3), r.getLong(4), r.getDouble(5), r.getDouble(6),
+                 r.getDouble(7), r.getDouble(8) ))
+ee_rowsRDD.cache()
+
+// VAIABLE SELECTION FOR CLUSTERING
+@transient val ee_vectors = scaledData5.rdd.map(r => Vectors.dense( r.getDouble(5), r.getDouble(6), r.getDouble(7), r.getDouble(8)))
+ee_vectors.cache()
+
+// RUN KMEANS CLUSTERING 
+val kMeansModel = KMeans.train(ee_vectors, 3, 20)  
+
+// calculate centroid by cluster
+kMeansModel.clusterCenters.foreach(println)
+
+// calculate WSS
+val WSSSE = kMeansModel.computeCost(ee_vectors)
+println("Within Set Sum of Squared Errors = " + WSSSE)
+
+// PREDICT CLUSTER  ON DATASET
+val stress_predictions = ee_rowsRDD.map{r => (r._1,r._2,r._3,r._4,r._5, kMeansModel.predict(Vectors.dense(r._6, r._7, r._8, r._9)))}
+
+// find the cluster no 
+val ee_uses_with_cluster_f = stress_predictions.toDF("start_cell_name", "calls_max", "data_volume_up_max", "data_volume_down_max", "userbase_max", "CLUSTER")
+
+-------------------------------------  pending----------------
+// join the dataframes on start_cell_name
+val ee_uses_with_cluster = scaledData5.join(pred_cell, "start_cell_name")
+val ee_uses_with_cluster_f = ee_uses_with_cluster.select("start_cell_name", "calls_max", "data_volume_up_max", "data_volume_down_max", "userbase_max" , "CLUSTER")
+ee_uses_with_cluster_f.show(10)
+-------------------------------------  pending ------------------
+
+// review a subset  by  each cluster
+ee_uses_with_cluster_f.filter("CLUSTER = 1").show(10)
+ee_uses_with_cluster_f.filter("CLUSTER = 2").show(10)
+
+// get descriptive statistics of features by each cluster
+ee_uses_with_cluster_f.filter("CLUSTER = 0").describe().show()
+ee_uses_with_cluster_f.filter("CLUSTER = 1").describe().show()
+ee_uses_with_cluster_f.filter("CLUSTER = 2").describe().show()
+
+// SAVE OUTPUT AS HIVE TABLE (method-1)
+ee_uses_with_cluster_f.write.saveAsTable("ee_cluster")
+
+// save  output as temporary table in hive (method -2)
+ee_uses_with_cluster_f.registerTempTable("ee_cluster_0607")
+val dfSqlContext = ee_uses_with_cluster_f.sqlContext
+dfSqlContext.sql("SELECT * FROM ee_cluster_0607").show(5)
+
+// SAVE OUTPUT IN HDFS (Method-3) ( remove square bracket of each record from RDD output and save in the HDFS )
+stress_predictions.map(rec=>rec.productIterator.mkString(",")).saveAsTextFile("hdfs://nameservice1/user/HAASAET0209_06429/ee_cluster_finalRDD3")
+
+
+######=============== normalization (not used in model)  (another method)
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.ml.feature.MinMaxScaler
+import org.apache.spark.sql.functions.udf
+val vectorizeCol = udf( (calls_max:Double) => Vectors.dense(Array(calls_max)) )
+val df2 = ee_usage_DF.withColumn("calls_maxVec", vectorizeCol(ee_usage_DF("calls_max"))
+val scaler = new MinMaxScaler().setInputCol("calls_maxVec").setOutputCol("scaledcalls_max")
+val scalerModel = scaler.fit(df2)
+val scaledData = scalerModel.transform(df2)
+scaledData.show(10)
+
+
+ import org.apache.spark.mllib.feature.{StandardScaler, StandardScalerModel}
+import org.apache.spark.ml.feature.StandardScaler
+val scaler = new StandardScaler().setInputCol("features").setOutputCol("scaledFeatures").setWithStd(true).setWithMean(false)
+
+val scaler = new MinMaxScaler().setInputCol("calls_maxVec").setOutputCol("Scaledcalls_max")
+val scalerModel = scaler.fit(df2)
+val scaledData = scalerModel.transform(df2)
+scaledData.show(100)
+  
